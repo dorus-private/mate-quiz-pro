@@ -11,7 +11,9 @@ import SwiftUI
 struct Math_Quiz_ProApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                ContentView()
+            }
         }
     }
 }

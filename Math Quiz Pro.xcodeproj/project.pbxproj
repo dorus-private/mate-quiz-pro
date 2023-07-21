@@ -14,6 +14,8 @@
 		EF85A5572A611F6500740337 /* Math_Quiz_ProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF85A5562A611F6500740337 /* Math_Quiz_ProTests.swift */; };
 		EF85A5612A611F6500740337 /* Math_Quiz_ProUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF85A5602A611F6500740337 /* Math_Quiz_ProUITests.swift */; };
 		EF85A5632A611F6500740337 /* Math_Quiz_ProUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF85A5622A611F6500740337 /* Math_Quiz_ProUITestsLaunchTests.swift */; };
+		EF85A5702A61212D00740337 /* Klasse 8.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF85A56F2A61212D00740337 /* Klasse 8.swift */; };
+		EFDD21DF2A69972700585B6A /* EingabeFeld.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD21DE2A69972700585B6A /* EingabeFeld.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		EF85A55C2A611F6500740337 /* Math Quiz ProUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Math Quiz ProUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF85A5602A611F6500740337 /* Math_Quiz_ProUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math_Quiz_ProUITests.swift; sourceTree = "<group>"; };
 		EF85A5622A611F6500740337 /* Math_Quiz_ProUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math_Quiz_ProUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		EF85A56F2A61212D00740337 /* Klasse 8.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Klasse 8.swift"; sourceTree = "<group>"; };
+		EFDD21DE2A69972700585B6A /* EingabeFeld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EingabeFeld.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,8 @@
 			children = (
 				EF85A5452A611F6400740337 /* Math_Quiz_ProApp.swift */,
 				EF85A5472A611F6400740337 /* ContentView.swift */,
+				EF85A56F2A61212D00740337 /* Klasse 8.swift */,
+				EFDD21DE2A69972700585B6A /* EingabeFeld.swift */,
 				EF85A5492A611F6500740337 /* Assets.xcassets */,
 				EF85A54B2A611F6500740337 /* Preview Content */,
 			);
@@ -208,11 +214,11 @@
 			};
 			buildConfigurationList = EF85A53D2A611F6400740337 /* Build configuration list for PBXProject "Math Quiz Pro" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = de;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				de,
 			);
 			mainGroup = EF85A5392A611F6400740337;
 			productRefGroup = EF85A5432A611F6400740337 /* Products */;
@@ -258,6 +264,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF85A5482A611F6400740337 /* ContentView.swift in Sources */,
+				EF85A5702A61212D00740337 /* Klasse 8.swift in Sources */,
+				EFDD21DF2A69972700585B6A /* EingabeFeld.swift in Sources */,
 				EF85A5462A611F6400740337 /* Math_Quiz_ProApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,7 +435,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-Pro";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -453,7 +461,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-Pro";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -471,7 +479,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-ProTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizproTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -491,7 +499,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-ProTests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizproTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -510,7 +518,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-ProUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizproUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -528,7 +536,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leon.Math-Quiz-ProUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizproUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
