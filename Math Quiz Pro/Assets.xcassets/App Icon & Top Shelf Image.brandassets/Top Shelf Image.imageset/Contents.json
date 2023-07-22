@@ -1,10 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "Math Quiz Icon1920x720.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
+      "filename" : "Math Quiz Icon3840x1440-2.png",
       "idiom" : "tv",
       "scale" : "2x"
     }

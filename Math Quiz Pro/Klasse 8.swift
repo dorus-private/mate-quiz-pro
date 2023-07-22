@@ -298,7 +298,6 @@ struct Klasse_8: View {
     func termeMitMehrerenVariablenAufgaben() {
         task = ""
         let variables = ["x", "y", "z"]
-        let numVariables = Int.random(in: 2...3)
         
         var taskComponents: [String] = []
         for _ in 1...3 {

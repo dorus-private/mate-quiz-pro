@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EF3C330C2A6B0C07003D027A /* Math-Quiz-Pro-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Math-Quiz-Pro-Info.plist"; sourceTree = SOURCE_ROOT; };
 		EF85A5422A611F6400740337 /* Math Quiz Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Math Quiz Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF85A5452A611F6400740337 /* Math_Quiz_ProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math_Quiz_ProApp.swift; sourceTree = "<group>"; };
 		EF85A5472A611F6400740337 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -98,6 +99,7 @@
 		EF85A5442A611F6400740337 /* Math Quiz Pro */ = {
 			isa = PBXGroup;
 			children = (
+				EF3C330C2A6B0C07003D027A /* Math-Quiz-Pro-Info.plist */,
 				EF85A5452A611F6400740337 /* Math_Quiz_ProApp.swift */,
 				EF85A5472A611F6400740337 /* ContentView.swift */,
 				EF85A56F2A61212D00740337 /* Klasse 8.swift */,
@@ -428,6 +430,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Math-Quiz-Pro-Info.plist";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -454,6 +457,7 @@
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Math-Quiz-Pro-Info.plist";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
