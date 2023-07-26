@@ -1,18 +1,18 @@
 //
-//  Klasse 8.swift
-//  Math Quiz Pro
+//  K8.swift
+//  Math Quiz Pro IOS
 //
-//  Created by Leon Șular on 14.07.23.
+//  Created by Leon Șular on 25.07.23.
 //
 
 import SwiftUI
 
-struct Klasse_8: View {
+struct K8: View {
     @State var erstens = false
     @State var zweitens = false
     @State var termeMitMehrerenVariablen = false
     @State var binomischeFormeln = false
-    @State private var task = ""
+    @AppStorage("task") private var task = ""
     @State var aufgaben = [""]
     @State var startAufgaben = false
     @State var besprechung = false
@@ -22,6 +22,7 @@ struct Klasse_8: View {
     @State var eingabe = "5"
     @State var progress = 0.0
     @State var navigationTitle = "Klasse 8"
+    @EnvironmentObject var externalDisplayContent: ExternalDisplayContent
     
     var body: some View {
         GeometryReader { geo in
@@ -29,35 +30,10 @@ struct Klasse_8: View {
                 if startAufgaben == false {
                     if anzahlEinstellen == false {
                         Form {
-                            Button(action: {
-                                withAnimation {
-                                    termeMitMehrerenVariablen.toggle()
-                                }
-                            }, label: {
-                                HStack {
-                                    Text("Terme mit mehreren Variablen vereinfachen")
-                                    if termeMitMehrerenVariablen {
-                                        toggleTrue
-                                    } else {
-                                        toggleFalse
-                                    }
-                                }
-                            })
-                            Button(action: {
-                                withAnimation {
-                                    binomischeFormeln.toggle()
-                                }
-                            }, label: {
-                                HStack {
-                                    Text("Binomische Formeln")
-                                    if binomischeFormeln {
-                                        toggleTrue
-                                    } else {
-                                        toggleFalse
-                                    }
-                                }
-                            })
+                            Toggle("Terme mit mehreren Variablen vereinfachen", isOn: $termeMitMehrerenVariablen)
+                            Toggle("Binomische Formeln", isOn: $binomischeFormeln)
                         }
+                        
                     } else {
                         Spacer()
                         Text("\(eingabe) Aufgaben")
@@ -73,7 +49,7 @@ struct Klasse_8: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button("Weiter") {
+                        Button(action: {
                             navigationTitle = "Anzahl der Aufgaben einstellen"
                             progress = 0
                             withAnimation {
@@ -90,23 +66,21 @@ struct Klasse_8: View {
                                     }
                                 }
                             }
-                        }
-                        .frame(height: 110)
+                        }, label: {
+                            ZStack {
+                                button
+                                Text("Weiter")
+                                    .foregroundColor(.white)
+                            }
+                        })
+                        .disabled(termeMitMehrerenVariablen == false && binomischeFormeln == false || aufgabenAnzahlUser < 5)
                         Spacer()
                     }
                 } else {
                     if besprechung == false {
-                        ZStack {
-                            VStack {
-                                Spacer()
-                                    .frame(height: 7.5)
-                                RoundedRectangle(cornerRadius: 30)
-                                    .frame(width: geo.size.width, height: 55)
-                                    .foregroundColor(.blue)
-                            }
-                            ProgressView("", value: progress, total: aufgabenAnzahlUser)
-                                .frame(width: geo.size.width - 30)
-                        }
+                        ProgressView("", value: progress, total: aufgabenAnzahlUser)
+                            .frame(width: geo.size.width - 30, height: 20)
+                            .background(Color.white)
                     }
                     Spacer()
                     HStack {
@@ -115,7 +89,7 @@ struct Klasse_8: View {
                             Text("Besprechen Sie im nächsten Schritt die Aufgaben mit der gesammten Klasse")
                         }
                         Text(task)
-                            .font(.system(size: 225))
+                            .font(.largeTitle)
                             .padding()
                         Spacer()
                     }
@@ -138,16 +112,21 @@ struct Klasse_8: View {
                                     progress = 0
                                     besprechung = false
                                     startAufgaben = false
+                                    task = ""
                                 }
                             }
                         }, label: {
-                            if task == "" {
-                                Text("Jetzt besprechen")
-                            } else if aufgabeCounter == aufgabenAnzahlUser + 1 {
-                                Text("Fertig und zurück")
-                            } else {
-                                Text("Weiter")
+                            ZStack {
+                                button
+                                if task == "" {
+                                    Text("Jetzt besprechen")
+                                } else if aufgabeCounter == aufgabenAnzahlUser + 1 {
+                                    Text("Fertig und zurück")
+                                } else {
+                                    Text("Weiter")
+                                }
                             }
+                            .foregroundColor(.white)
                         })
                     }
                 }
@@ -156,42 +135,16 @@ struct Klasse_8: View {
         }
     }
     
-    var toggleTrue: some View {
-        ZStack {
-            HStack {
-                Spacer()
-                RoundedRectangle(cornerRadius: 100)
-                    .frame(width: 100, height: 50)
-                    .foregroundColor(.green)
-            }
-            HStack {
-                Spacer()
-                Circle()
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(.white)
-            }
+    var button: some View {
+        HStack {
+            Spacer()
+                .frame(width: 10)
+            RoundedRectangle(cornerRadius: 15)
+                .foregroundColor(termeMitMehrerenVariablen == false && binomischeFormeln == false ? .gray : .blue)
+                .frame(height: 50)
+            Spacer()
+                .frame(width: 10)
         }
-        .shadow(radius: 5)
-    }
-    
-    var toggleFalse: some View {
-        ZStack {
-            HStack {
-                Spacer()
-                RoundedRectangle(cornerRadius: 100)
-                    .frame(width: 100, height: 50)
-                    .foregroundColor(.gray)
-            }
-            HStack {
-                Spacer()
-                Circle()
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(.white)
-                Spacer()
-                    .frame(width: 55)
-            }
-        }
-        .shadow(radius: 5)
     }
     
     func termeMitMehrerenVariablenAufgaben() {
@@ -274,17 +227,18 @@ struct Klasse_8: View {
     }
 }
 
-struct Klasse_8_Previews: PreviewProvider {
-    static var previews: some View {
-        Klasse_8()
-    }
-}
-
 extension String {
     var superscripted: String {
         let superscriptMap: [Character: Character] = [
             "2": "²"
         ]
         return String(self.map { superscriptMap[$0] ?? $0 })
+    }
+}
+
+
+struct K8_Previews: PreviewProvider {
+    static var previews: some View {
+        K8()
     }
 }
