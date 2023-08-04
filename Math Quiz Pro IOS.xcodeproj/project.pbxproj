@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF3B627B2A76EA5F005FD1DC /* ZufälligePerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3B627A2A76EA5F005FD1DC /* ZufälligePerson.swift */; };
 		EF82872A2A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8287292A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift */; };
 		EF82872C2A6FD49400E42415 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF82872B2A6FD49400E42415 /* ContentView.swift */; };
 		EF82872E2A6FD49500E42415 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF82872D2A6FD49500E42415 /* Assets.xcassets */; };
@@ -60,6 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EF3B627A2A76EA5F005FD1DC /* ZufälligePerson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZufälligePerson.swift"; sourceTree = "<group>"; };
 		EF3C330C2A6B0C07003D027A /* Math-Quiz-Pro-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Math-Quiz-Pro-Info.plist"; sourceTree = SOURCE_ROOT; };
 		EF8287272A6FD49400E42415 /* Math Quiz Pro IOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Math Quiz Pro IOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF8287292A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math_Quiz_Pro_IOSApp.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				EF8287292A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift */,
 				EF82872B2A6FD49400E42415 /* ContentView.swift */,
 				EF8287512A6FF57900E42415 /* K8.swift */,
+				EF3B627A2A76EA5F005FD1DC /* ZufälligePerson.swift */,
 				EF8287532A6FF60300E42415 /* KeyPad.swift */,
 				EF8287552A70053B00E42415 /* ExternalView.swift */,
 				EF82872D2A6FD49500E42415 /* Assets.xcassets */,
@@ -383,7 +386,7 @@
 					};
 				};
 			};
-			buildConfigurationList = EF85A53D2A611F6400740337 /* Build configuration list for PBXProject "Math Quiz Pro" */;
+			buildConfigurationList = EF85A53D2A611F6400740337 /* Build configuration list for PBXProject "Math Quiz Pro IOS" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = de;
 			hasScannedForEncodings = 0;
@@ -461,6 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF82872C2A6FD49400E42415 /* ContentView.swift in Sources */,
+				EF3B627B2A76EA5F005FD1DC /* ZufälligePerson.swift in Sources */,
 				EF8287542A6FF60300E42415 /* KeyPad.swift in Sources */,
 				EF82872A2A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift in Sources */,
 				EF8287562A70053B00E42415 /* ExternalView.swift in Sources */,
@@ -545,7 +549,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -579,7 +583,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -967,7 +971,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EF85A53D2A611F6400740337 /* Build configuration list for PBXProject "Math Quiz Pro" */ = {
+		EF85A53D2A611F6400740337 /* Build configuration list for PBXProject "Math Quiz Pro IOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EF85A5642A611F6500740337 /* Debug */,

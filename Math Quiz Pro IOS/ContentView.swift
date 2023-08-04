@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ContentView: View {
     @ObservedObject var externalDisplayContent = ExternalDisplayContent()
@@ -30,13 +31,12 @@ struct ContentView: View {
                     }
                 }
             }
+            .navigationBarItems(trailing: NavigationLink(destination: {
+                //Einstellungen()
+            }, label: {
+                Image(systemName: "gear")
+            }))
             .navigationTitle("Home")
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }

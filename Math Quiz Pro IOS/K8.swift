@@ -80,7 +80,6 @@ struct K8: View {
                     if besprechung == false {
                         ProgressView("", value: progress, total: aufgabenAnzahlUser)
                             .frame(width: geo.size.width - 30, height: 20)
-                            .background(Color.white)
                     }
                     Spacer()
                     HStack {
@@ -95,6 +94,7 @@ struct K8: View {
                     }
                     Spacer()
                     if besprechung {
+                        Zufa_lligePerson()
                         Button(action: {
                             withAnimation {
                                 navigationTitle = ""
