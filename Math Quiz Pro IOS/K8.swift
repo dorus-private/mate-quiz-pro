@@ -94,7 +94,6 @@ struct K8: View {
                     }
                     Spacer()
                     if besprechung {
-                        Zufa_lligePerson()
                         Button(action: {
                             withAnimation {
                                 navigationTitle = ""
