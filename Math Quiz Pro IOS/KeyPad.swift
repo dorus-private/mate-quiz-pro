@@ -84,24 +84,48 @@ struct KeyPad: View {
     @AppStorage("device") var device = ""
     
     var body: some View {
-        ZStack {
-            if device == "IPhone" {
-                RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(.cyan)
-                    .frame(width: 150, height: 195)
-                    .shadow(radius: 10)
-            } else {
-                RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(.cyan)
-                    .frame(width: 350, height: 450)
-                    .shadow(radius: 10)
-            }
+        GeometryReader { geo in
             VStack {
-                KeyPadRow(keys: ["1", "2", "3"])
-                KeyPadRow(keys: ["4", "5", "6"])
-                KeyPadRow(keys: ["7", "8", "9"])
-                KeyPadRow(keys: ["", "0", "⌫"])
-            }.environment(\.keyPadButtonAction, self.keyWasPressed(_:))
+                Spacer()
+                HStack {
+                    Spacer()
+                    ZStack {
+                        if UIDevice.current.userInterfaceIdiom == .pad || geo.size.height > geo.size.width {
+                            RoundedRectangle(cornerRadius: 15)
+                                .foregroundColor(.cyan)
+                                .frame(width: 350, height: 450)
+                                .shadow(radius: 10)
+                        } else {
+                            RoundedRectangle(cornerRadius: 15)
+                                .foregroundColor(.cyan)
+                                .frame(width: 150, height: 195)
+                                .shadow(radius: 10)
+                        }
+                        VStack {
+                            KeyPadRow(keys: ["1", "2", "3"])
+                            KeyPadRow(keys: ["4", "5", "6"])
+                            KeyPadRow(keys: ["7", "8", "9"])
+                            KeyPadRow(keys: ["", "0", "⌫"])
+                        }.environment(\.keyPadButtonAction, self.keyWasPressed(_:))
+                    }
+                    .onAppear {
+                        if UIDevice.current.userInterfaceIdiom == .pad || geo.size.height > geo.size.width {
+                            device = "IPad"
+                        } else {
+                            device = "IPhone"
+                        }
+                    }
+                    .onChange(of: UIDevice.current.orientation) { _ in
+                        if UIDevice.current.userInterfaceIdiom == .pad || geo.size.height > geo.size.width {
+                            device = "IPad"
+                        } else {
+                            device = "IPhone"
+                        }
+                    }
+                    Spacer()
+                }
+                Spacer()
+            }
         }
     }
 

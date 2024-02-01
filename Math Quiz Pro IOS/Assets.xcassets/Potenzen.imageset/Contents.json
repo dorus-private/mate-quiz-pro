@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "Bildschirmfoto 2024-01-25 um 17.09.11.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

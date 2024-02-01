@@ -2,7 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string></string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Erlauben Sie den Zugriff auf Face ID bzw. Touch ID, um die Daten Ihrer Schüler noch mehr zu schützen</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Erlauben Sie den Zugriff auf das Microphon, damit die App die aktuelle Lautstärke in der Klasse messen kann</string>
+	<key>Privacy — Local Network Usage Description</key>
+	<string>Erlauben Sie den Zugriff, damit Sie einen Datenaustausch mit anderen in der Klasse machen können</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_nearby-devices._tcp</string>
+		<string>_nearby-devices._upd</string>
+	</array>
 </dict>
 </plist>

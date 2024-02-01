@@ -16,21 +16,93 @@ class ExternalDisplayContent: ObservableObject {
 }
 
 struct ExternalView: View {
-
+    @AppStorage("isAirPlayActive") var isAirplayActive = false
     @EnvironmentObject var externalDisplayContent: ExternalDisplayContent
     @AppStorage("task") private var task = ""
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View {
-        if task == "" {
-            EyeView()
-        } else {
-            Text(task)
-                .font(.system(size: 500))
+        VStack {
+            if task == "" {
+                EyeView()
+            } else if task == "Counter" {
+               CounterView()
+            } else if task == "Besprechen" {
+                Image(systemName: "person.3.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.accentColor)
+                    .padding(20)
+                Text("Besprechung")
+                    .font(.system(size: 250))
+            } else if task == "lautstärke" {
+                LautstärkeAmpel()
+            } else {
+                if task.contains("^") {
+                    AttributedTextView(attributedString: TextBindingManager(string: "\(task)", hoch: 120).attributedString, fontSize: 250)
+                                    .frame(height: 500)
+                } else {
+                    Text(task)
+                        .font(.system(size: 250))
+                        .multilineTextAlignment(.center)
+                }
+            }
         }
     }
 
 }
 
+struct CounterView: View {
+    @State var startProgress = 0.0
+    @State var startProgressText = 0
+    @AppStorage("task") private var task = ""
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(
+                    Color.pink.opacity(0.5),
+                    lineWidth: 30
+                )
+            Circle()
+                .trim(from: 0, to: startProgress)
+                .stroke(
+                    Color.pink,
+                    // 1
+                    style: StrokeStyle(
+                        lineWidth: 30,
+                        lineCap: .round
+                    )
+                )
+                .rotationEffect(.degrees(-90))
+            Text("\(startProgressText)")
+                .font(.largeTitle)
+        }
+        .padding(50)
+        .onAppear() {
+            task = "Counter"
+            startProgressText = 3
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                withAnimation(.easeIn(duration: 0.75)) {
+                    startProgress = 0.33333
+                    startProgressText = 2
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                withAnimation(.easeIn(duration: 0.75)) {
+                    startProgress = 0.66666
+                    startProgressText = 1
+                }
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
+                withAnimation(.easeIn(duration: 0.75)) {
+                    startProgress = 1.0
+                    startProgressText = 0
+                }
+            }
+        }
+    }
+}
 struct EyeView: View {
     @State private var xPosition: CGFloat = 0
     @State private var yPosition: CGFloat = 24
@@ -48,6 +120,27 @@ struct EyeView: View {
                 .foregroundColor(.white)
                 .frame(width: 1000, height: 1000)
                 .overlay {
+                    VStack {
+                        Spacer()
+                            .frame(height: 35)
+                        ZStack {
+                            Circle()
+                                .frame(width: 750, height: 750)
+                                .foregroundColor(.red)
+                            VStack {
+                                Rectangle()
+                                    .foregroundColor(.yellow)
+                                    .frame(width: 505, height: 100)
+                                Spacer()
+                                    .frame(height: 0)
+                                Rectangle()
+                                    .foregroundColor(.yellow)
+                                    .frame(width: 750, height: 550)
+                                Spacer()
+                                    .frame(height: 100)
+                            }
+                        }
+                    }
                     HStack(spacing: 50) {
                         Circle()
                             .foregroundColor(.white)
@@ -81,15 +174,6 @@ struct EyeView: View {
                                     .frame(width: 150, height: 150)
                                     .offset(x: xPosition, y: yPosition)
                             }
-                    }
-                    
-                    VStack {
-                        Spacer()
-                            .frame(height: 200)
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.black)
-                            .frame(width: 200, height: 20)
-                            .padding(.top, 180)
                     }
                 }
             VStack {

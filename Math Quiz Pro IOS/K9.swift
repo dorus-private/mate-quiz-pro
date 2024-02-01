@@ -1,21 +1,24 @@
 //
-//  K8.swift
+//  K9.swift
 //  Math Quiz Pro IOS
 //
-//  Created by Leon Șular on 25.07.23.
+//  Created by Leon Șular on 10.11.23.
 //
 
 import SwiftUI
+import AVKit
 
-struct K8: View {
-    @State var termeMitMehrerenVariablen = false
-    @State var binomischeFormeln = false
-    @State var formelnNachVarAuflösen = false
-    @State var multiplitierenVSummen = false
-    @State var quadratwurzeln = false
+struct K9: View {
+    @State var audioPlayer: AVAudioPlayer!
+    
+    @State var potenzenMitGanzenHochzahlen = false
+    @State var potenzenMitGleichenGrundzahlen = false
+    @State var potenzenMitGleichenHochzahlen = false
+    @State var potenzierenVonPotenzen = false
+    @State var rationaleHochzahlen = false
     @ObservedObject var database = Database()
     
-    @AppStorage("Klasse 8") var klasse8 = false
+    @AppStorage("Klasse 9") var klasse9 = false
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @State var step = 0
@@ -27,6 +30,7 @@ struct K8: View {
     @State var lösung = ""
     @State var tasksGenerated = 0
     @State var showError1Alert = false
+    @State var exponentVorzeichen = "Positiv/Negativ"
     @State private var selectedClass = ""
     @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
     @State var schüler = ""
@@ -36,23 +40,47 @@ struct K8: View {
         ZStack {
             if step == 0 {
                 List {
-                    Section("I. Terme mit mehreren Variablen") {
-                        Toggle("Terme mit mehreren Variablen vereinfachen", isOn: $termeMitMehrerenVariablen)
-                        Toggle("Multiplitieren von Summen", isOn: $multiplitierenVSummen)
-                        Toggle("Binomische Formeln", isOn: $binomischeFormeln)
-                        Toggle("Formeln nach Variablen auflösen", isOn: $formelnNachVarAuflösen)
+                    Section("I. Potenzen") {
+                        VStack {
+                            Toggle("Potenzen mit ganzen Hochzahlen", isOn: $potenzenMitGanzenHochzahlen)
+                            if potenzenMitGanzenHochzahlen {
+                                Menu(content: {
+                                    Button("Positiv/Negativ") {
+                                        exponentVorzeichen = "Positiv/Negativ"
+                                    }
+                                    Button("Negativ") {
+                                        exponentVorzeichen = "Negativ"
+                                    }
+                                    Button("Positiv") {
+                                        exponentVorzeichen = "Positiv"
+                                    }
+                                }, label: {
+                                    HStack {
+                                        Text("  ➜ Exponent ist:")
+                                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                                        Spacer()
+                                        Text(exponentVorzeichen)
+                                    }
+                                })
+                            }
+                        }
+                        Toggle("Potenzen mit gleichen Grundzahlen", isOn: $potenzenMitGleichenGrundzahlen)
+                        Toggle("Potenzen mit gleichen Hochzahlen", isOn: $potenzenMitGleichenHochzahlen)
+                        /*Toggle("Potenzieren von Potenzen", isOn: $potenzierenVonPotenzen)
+                            .disabled(true)
+                            .foregroundColor(.gray)
+                         */
+                        // Toggle("Rationale Hochzahlen", isOn: $rationaleHochzahlen)
                     }
-                    Section("II. Wahrscheinlichkeiten") {
+                    .tint(.blue)
+                    Section("II. Kongruenz und Ähnlichkeit") {
                         Text("Für dieses Thema gibt es momentan keine Aufgaben")
                     }
-                    /*
-                    Section("III. Reelle Zahlen") {
-                        Toggle("Quadratwurzeln", isOn: $quadratwurzeln)
+                    Section("III. Potenzfunktionen und Exponentialfunktionen") {
+                        Text("Für dieses Thema gibt es momentan keine Aufgaben")
                     }
-                     */
                 }
-                .tint(.blue)
-                .navigationTitle(klasse8 ? "" : "Klasse 8")
+                .navigationTitle(klasse9 ? "" : "Klasse 9")
             }
             
             VStack {
@@ -116,6 +144,7 @@ struct K8: View {
                             .frame(height: 100)
                             .padding(.bottom, 10)
                             .foregroundColor(colorScheme == .dark ? .white : .black)
+                        
                             .onAppear() {
                                 for i in 1...gesammtAufgaben + 10 {
                                     generateTask()
@@ -234,7 +263,7 @@ struct K8: View {
                                 Spacer()
                                     .frame(width: 20)
                                 Button(action: {
-                                    klasse8 = false
+                                    klasse9 = false
                                     dismiss()
                                 }, label: {
                                     Image(systemName: "arrow.left.square.fill")
@@ -309,7 +338,33 @@ struct K8: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            // Load items from UserDefaults when the view appears
+            klassenListe = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
+            step = 0
+            selectedClass = ""
+        }
     }
+    
+    func letzterSchritt() {
+        if tasksGenerated != gesammtAufgaben - 2 {
+            if tasksGenerated == 0 {
+                tasksGenerated += 1
+            }
+            tasksGenerated += 1
+            task = aufgaben[tasksGenerated - 1]
+            lösung = lösungen[tasksGenerated - 1]
+        } else {
+            withAnimation(.easeOut(duration: 0.5)) {
+                step = 0
+                tasksGenerated = 0
+            }
+        }
+        if selectedClass != "" {
+            getStudent()
+        }
+    }
+    
     func getStudent() {
         let randomStudent = Database().students.randomElement()
         if randomStudent?.klasse == selectedClass {
@@ -346,121 +401,86 @@ struct K8: View {
         letzterSchritt()
     }
     
-    func letzterSchritt() {
-        if tasksGenerated != gesammtAufgaben - 2 {
-            if tasksGenerated == 0 {
-                tasksGenerated += 1
-            }
-            tasksGenerated += 1
-            task = aufgaben[tasksGenerated - 1]
-            lösung = lösungen[tasksGenerated - 1]
-        } else {
-            withAnimation(.easeOut(duration: 0.5)) {
-                step = 0
-                tasksGenerated = 0
-            }
-        }
-        if selectedClass != "" {
-            getStudent()
-        }
-    }
-    
-    func termeMitMehrerenVariablenAufgaben() {
-        task = ""
-        let variables = ["x", "y", "z"]
-        
-        var taskComponents: [String] = []
-        for _ in 1...3 {
-            let variable = variables.randomElement()!
-            let coefficient = Int.random(in: 1...10)
-            taskComponents.append("\(coefficient)\(variable)")
-        }
-        
-        for i in 0...taskComponents.count - 1 {
-            if i == 0 {
-                task = task + taskComponents[i] + " * "
+    func potenzenMitGanzenHochzahlenAufgaben() {
+        let x = Int.random(in: 5...25)
+        if exponentVorzeichen == "Positiv/Negativ" {
+            let pos = Int.random(in: 1...2)
+            if pos == 1 {
+                task = "\(x)\u{207B}s".superscripted
+                lösung = "1/\(x * x)"
             } else {
-                let operatorVar = Int.random(in: 1...2)
-                if i != taskComponents.count - 1 {
-                    if operatorVar == 1 {
-                        task = task + taskComponents[i] + " + "
-                    } else {
-                        task = task + taskComponents[i] + " - "
-                    }
-                } else {
-                    task = task + taskComponents[i]
-                }
+                task = "\(x)s".superscripted
+                lösung = "\(x * x)"
             }
-        }
-        lösung = "kL"
-        checkGeneratedTask()
-    }
-
-    func multiplitierenVSummenAufgabe() {
-        let rI1 = Int.random(in: 1...15)
-        let rI2 = Int.random(in: 5...10)
-        
-        let zwischenTask = "(a + \(rI1)) * (b - \(rI2))"
-        let zwischenLösung = "ab + \(rI2)a + \(rI1)b - \(rI1 * rI2)"
-        
-        task = zwischenTask
-        lösung = zwischenLösung
-        checkGeneratedTask()
-    }
-    
-    func binomischeFormelnAufgaben() {
-        let binomischeFormel = Int.random(in: 1...3)
-        let rI10 = Int.random(in: 2...20)
-        
-        if binomischeFormel == 1 {
-            task = "(a + \(rI10))s".superscripted
-            lösung = "as + \(2 * rI10)a + \(rI10 * rI10)".superscripted
-        } else if binomischeFormel == 2 {
-            task = "(a - \(rI10))s".superscripted
-            lösung = "as - \(2 * rI10)a + \(rI10 * rI10)".superscripted
+        } else if exponentVorzeichen == "Positiv" {
+            task = "\(x)s".superscripted
+            lösung = "\(x * x)"
         } else {
-            task = "(a + \(rI10)) * (a - \(rI10))"
-            lösung = "as - \(rI10 * rI10)".superscripted
+            task = "\(x)\u{207B}s".superscripted
+            lösung = "1/\(x * x)"
         }
         checkGeneratedTask()
     }
     
-    func formelnNachVarAuflösenTask() {
-        let formel = Int.random(in: 1...2)
-            
-        if formel == 1 {
-            task = "Löse die Gleichung nach s auf \n v = s / t"
-            lösung = "s = v * t"
-        } else {
-            task = "Löse die Gleichung nach t auf \n v = s / t"
-            lösung = "t = s / v"
-        }
-        checkGeneratedTask()
-    }
-    
-    func quadratwurzelnTask() {
-        let rdI1 = Int.random(in: 5...20)
-        let rdI2 = Int.random(in: 5...20)
-        let rdITask = Int.random(in: 1...3)
+    func potenzenMitGleichenGrundzahlenAufgaben() {
+        let x = Int.random(in: 1...25)
+        let n1 = Int.random(in: 1...4)
+        let n2 = Int.random(in: 1...5)
         
-        if rdITask == 1 {
-            task = "√ aus \(rdI1)"
-            lösung = ""
+        task = "\(x)^\(n1) * \(x)^\(n2)"
+        lösung = "\(x)^\(n1 + n2)"
+        checkGeneratedTask()
+    }
+    
+    func potenzenMitGleichenHochzahlenAufgaben() {
+        let x1 = Int.random(in: 1...10)
+        let x2 = Int.random(in: 1...10)
+        let n = Int.random(in: 2...9)
+        
+        task = "\(x1)^\(n) * \(x2)^\(n)"
+        lösung = "\(x1 * x2)^\(n)"
+        checkGeneratedTask()
+    }
+    
+    func potenzierenVnPotenzenAufgaben() {
+        task = "?"
+        lösung = "?"
+        checkGeneratedTask()
+    }
+    
+    func rationaleHochzahlenAufgaben() {
+        var x = Int.random(in: 1...25)
+        let n = Int.random(in: 1...5)
+        if n == 1 {
+            task = "rational_\(x * x) 0,50"
+            task = "rational_\(x)"
+        } else if n == 2 {
+            x = Int.random(in: 2...5)
+            task = "rational_\(x * x * x) 0,33"
+            task = "rational_\(x)"
+        } else if n == 3 {
+            x = Int.random(in: 2...3)
+            task = "rational_\(x * x * x * x) 0.0.25"
+            task = "rational_\(x * x * x * x) 0.0.25"
         }
+        checkGeneratedTask()
     }
     
     func generateTask() {
-        if binomischeFormeln {
-            binomischeFormelnAufgaben()
+        if potenzenMitGanzenHochzahlen {
+            potenzenMitGanzenHochzahlenAufgaben()
         }
-        if termeMitMehrerenVariablen {
-            termeMitMehrerenVariablenAufgaben()
+        if potenzenMitGleichenGrundzahlen {
+            potenzenMitGleichenGrundzahlenAufgaben()
         }
-        if formelnNachVarAuflösen {
-            formelnNachVarAuflösenTask()
+        if potenzenMitGleichenHochzahlen {
+            potenzenMitGleichenHochzahlenAufgaben()
         }
-        if multiplitierenVSummen {
-            multiplitierenVSummenAufgabe()
+        if potenzierenVonPotenzen {
+            potenzierenVnPotenzenAufgaben()
+        }
+        if rationaleHochzahlen {
+            rationaleHochzahlenAufgaben()
         }
     }
     
@@ -477,244 +497,72 @@ struct K8: View {
     }
 }
 
-/*
-struct K8: View {
-    @State var exersices: [Exercise] = [BinomischeFormeln(active: false), TermeMitMehrerenVariablen(active: true)]
-    @State var erstens = false
-    @State var zweitens = false
-    @State var termeMitMehrerenVariablen = false
-    @State var binomischeFormeln = false
-    @AppStorage("task") private var task = ""
-    @State var aufgaben = [""]
-    @State var startAufgaben = false
-    @State var besprechung = false
-    @State var aufgabeCounter = 0.0
-    @State var aufgabenAnzahlUser = 5.0
-    @State var anzahlEinstellen = false
-    @State var eingabe = "5"
-    @State var progress = 0.0
-    @State var navigationTitle = "Klasse 8"
-    @EnvironmentObject var externalDisplayContent: ExternalDisplayContent
+struct AttributedTextView: UIViewRepresentable {
+    @Environment(\.colorScheme) var colorScheme
     
-    var body: some View {
-        GeometryReader { geo in
-            VStack {
-                if startAufgaben == false {
-                    if anzahlEinstellen == false {
-                        Form {
-                            Toggle("Terme mit mehreren Variablen vereinfachen", isOn: $termeMitMehrerenVariablen)
-                            Toggle("Binomische Formeln", isOn: $binomischeFormeln)
-                        }
-                        List {
-                            ForEach(exersices, content: { exercise in
-                                Text(exercise.description)
-                            })
-                        }
-                    } else {
-                        Spacer()
-                        Text("\(eingabe) Aufgaben")
-                        Spacer()
-                        KeyPad(string: $eingabe)
-                        Spacer()
-                        Text("Die Anzahl der Aufgaben muss über 5 sein, sonst können Sie nicht weiter drücken")
-                            .font(.caption2)
-                            .multilineTextAlignment(.center)
-                            .frame(width: 450)
-                        Spacer()
-                    }
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            navigationTitle = "Anzahl der Aufgaben einstellen"
-                            progress = 0
-                            withAnimation {
-                                if anzahlEinstellen == false {
-                                    anzahlEinstellen = true
-                                } else {
-                                    aufgabenAnzahlUser = Double(Int(eingabe) ?? 5)
-                                    if aufgabenAnzahlUser > 4 {
-                                        startAufgaben = true
-                                        anzahlEinstellen = false
-                                        repeatWithDelay(iterations: Int(aufgabenAnzahlUser), delay: 15) {_ in
-                                            generateTask()
-                                        }
-                                    }
-                                }
-                            }
-                        }, label: {
-                            ZStack {
-                                button
-                                Text("Weiter")
-                                    .foregroundColor(.white)
-                            }
-                        })
-                        .disabled(termeMitMehrerenVariablen == false && binomischeFormeln == false || aufgabenAnzahlUser < 5)
-                        Spacer()
-                    }
-                } else {
-                    if besprechung == false {
-                        ProgressView("", value: progress, total: aufgabenAnzahlUser)
-                            .frame(width: geo.size.width - 30, height: 20)
-                    }
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        if task == "" {
-                            Text("Besprechen Sie im nächsten Schritt die Aufgaben mit der gesammten Klasse")
-                        }
-                        Text(task)
-                            .font(.largeTitle)
-                            .padding()
-                        Spacer()
-                    }
-                    Spacer()
-                    if besprechung {
-                        Button(action: {
-                            withAnimation {
-                                navigationTitle = ""
-                                if aufgabeCounter != aufgabenAnzahlUser + 1 {
-                                    task = aufgaben[Int(aufgabeCounter)]
-                                    aufgabeCounter += 1
-                                    progress += 1
-                                    if aufgabeCounter == 1 {
-                                        navigationTitle = "Besprechung"
-                                    } else {
-                                        navigationTitle = "Besprechung Aufgabe \(Int(aufgabeCounter) - 1)"
-                                    }
-                                } else {
-                                    aufgabeCounter = 0
-                                    progress = 0
-                                    besprechung = false
-                                    startAufgaben = false
-                                    task = ""
-                                }
-                            }
-                        }, label: {
-                            ZStack {
-                                button
-                                if task == "" {
-                                    Text("Jetzt besprechen")
-                                } else if aufgabeCounter == aufgabenAnzahlUser + 1 {
-                                    Text("Fertig und zurück")
-                                } else {
-                                    Text("Weiter")
-                                }
-                            }
-                            .foregroundColor(.white)
-                        })
-                    }
-                }
-            }
-            .navigationTitle(navigationTitle)
-        }
+    let attributedString: NSAttributedString
+    let fontSize: CGFloat
+
+    init(attributedString: NSAttributedString, fontSize: CGFloat) {
+        self.attributedString = attributedString
+        self.fontSize = fontSize
     }
-    
-    var button: some View {
-        HStack {
-            Spacer()
-                .frame(width: 10)
-            RoundedRectangle(cornerRadius: 15)
-                .foregroundColor(termeMitMehrerenVariablen == false && binomischeFormeln == false ? .gray : .blue)
-                .frame(height: 50)
-            Spacer()
-                .frame(width: 10)
-        }
-    }
-    
-    func termeMitMehrerenVariablenAufgaben() {
-        task = ""
-        let variables = ["x", "y", "z"]
-        
-        var taskComponents: [String] = []
-        for _ in 1...3 {
-            let variable = variables.randomElement()!
-            let coefficient = Int.random(in: 1...10)
-            taskComponents.append("\(coefficient)\(variable)")
-        }
-        
-        for i in 0...taskComponents.count - 1 {
-            if i == 0 {
-                task = task + taskComponents[i] + " * "
-            } else {
-                let operatorVar = Int.random(in: 1...2)
-                if i != taskComponents.count - 1 {
-                    if operatorVar == 1 {
-                        task = task + taskComponents[i] + " + "
-                    } else {
-                        task = task + taskComponents[i] + " - "
-                    }
-                } else {
-                    task = task + taskComponents[i]
-                }
-            }
-        }
-        aufgaben.append(task)
-        print(task)
-    }
-    
-    func binomischeFormelnAufgaben() {
-        let binomischeFormel = Int.random(in: 1...3)
-        if binomischeFormel == 1 {
-            task = "(a + \(Int.random(in: 3...10)))2".superscripted
-        } else if binomischeFormel == 2 {
-            task = "(a - \(Int.random(in: 3...10)))2".superscripted
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        textView.attributedText = attributedString
+        textView.font = UIFont.systemFont(ofSize: fontSize)
+        textView.textAlignment = .center
+        textView.backgroundColor = .clear
+        if colorScheme == .dark {
+            textView.textColor = .white
         } else {
-            let rdNumber1 = Int.random(in: 2...20)
-            task = "(a + \(rdNumber1)) * (a - \(rdNumber1))"
+            textView.textColor = .black
         }
-        aufgaben.append(task)
+        textView.isEditable = false
+        textView.isUserInteractionEnabled = false
+        return textView
     }
-    
-    func generateTask() {
-        withAnimation {
-            progress += 1
-        }
-        navigationTitle = "Aufgabe \(Int(progress))"
-        if termeMitMehrerenVariablen == true && binomischeFormeln == true {
-            let randomAufgabe = Int.random(in: 1...2)
-            if randomAufgabe == 1 {
-                termeMitMehrerenVariablenAufgaben()
-            } else {
-                binomischeFormelnAufgaben()
-            }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        uiView.attributedText = attributedString
+        uiView.font = UIFont.systemFont(ofSize: fontSize)
+        uiView.textAlignment = .center
+        uiView.backgroundColor = .clear
+        if colorScheme == .dark {
+            uiView.textColor = .white
         } else {
-            if termeMitMehrerenVariablen {
-                termeMitMehrerenVariablenAufgaben()
-            }
-            if binomischeFormeln {
-                binomischeFormelnAufgaben()
-            }
-        }
-    }
-    
-    private func repeatWithDelay(iterations: Int, delay: TimeInterval, action: @escaping (Int) -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
-            for i in 0..<iterations {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * delay) {
-                    action(i)
-                    if i == iterations - 1 {
-                        besprechung = true
-                    }
-                }
-            }
+            uiView.textColor = .black
         }
     }
 }
-*/
 
-extension String {
-    var superscripted: String {
-        let superscriptMap: [Character: Character] = [
-            "s": "²"
-        ]
-        return String(self.map { superscriptMap[$0] ?? $0 })
+class TextBindingManager: ObservableObject {
+    @Published var string: String
+    @Published var hoch: Int
+    var attributedString: NSAttributedString {
+        let mutableAttributedString = NSMutableAttributedString(string: string)
+
+        let pattern = #"\d+\^\d+"#
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+
+        let matches = regex.matches(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
+
+        for match in matches {
+            if match.numberOfRanges == 1 {
+                let range = match.range
+                mutableAttributedString.setAttributes([.font: UIFont.systemFont(ofSize: 5), .baselineOffset: hoch], range: NSRange(location: range.location + range.length - 1, length: 1))
+            }
+        }
+        
+        let finalString = NSMutableAttributedString(attributedString: mutableAttributedString)
+        finalString.mutableString.replaceOccurrences(of: "^", with: "", options: [], range: NSRange(location: 0, length: finalString.length))
+
+        return finalString
     }
-}
 
-
-struct K8_Previews: PreviewProvider {
-    static var previews: some View {
-        K8()
+    init(string: String, hoch: Int) {
+        self.string = string
+        self.hoch = hoch
     }
 }
