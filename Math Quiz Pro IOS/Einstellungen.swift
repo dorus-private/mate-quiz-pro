@@ -8,6 +8,114 @@
 import SwiftUI
 import LocalAuthentication
 
+class StudentStatus: Identifiable, Codable {
+    var id = UUID()
+    var status: String
+    var datum: String
+    var fach: String
+    
+    init(status: String, datum: String, fach: String) {
+        self.status = status
+        self.datum = datum
+        self.fach = fach
+    }
+}
+
+class Student2: Identifiable, Codable {
+    var id = UUID()
+    var name: String
+    var klasse: String
+    var status: [StudentStatus]
+    var richtig = 0
+    var falsch = 0
+    var abwesend = 0
+    
+    init(name: String, klasse: String, status: [StudentStatus]) {
+        self.name = name
+        self.klasse = klasse
+        self.status = status
+        /*
+        for stat in status {
+            switch stat.status {
+                case "r":
+                    richtig += 1
+                case "f":
+                    falsch += 1
+                case "a":
+                    abwesend += 1
+                default:
+                    break
+            }
+        }
+         */
+    }
+}
+
+// Datenbankklasse
+class Database2: ObservableObject {
+    @Published var students: [Student2]
+    
+    init() {
+        // Laden der gespeicherten Daten aus UserDefaults
+        if let data = UserDefaults.standard.data(forKey: "students2"),
+           let decodedStudents = try?JSONDecoder().decode([Student2].self, from: data) {
+            self.students = decodedStudents
+        } else {
+            self.students = []
+        }
+    }
+    
+    func addStudent(student: Student) {
+        students.append(Student2(name: student.name, klasse: student.klasse, status: [StudentStatus(status: "?", datum: datum(), fach: "Mathe")]))
+        saveData()
+    }
+    
+    func updateStatus(name: String, status: String) {
+        var student2 = Student2(name: "", klasse: "", status: [StudentStatus(status: "", datum: "", fach: "")])
+        for student in students {
+            if student.name == name {
+                student2 = student
+                break
+            }
+        }
+        if let index = students.firstIndex(where: { $0.id == student2.id }) {
+            students[index].status.append(StudentStatus(status: status, datum: datum(), fach: "Mathe"))
+            saveData()
+        } else {
+            print("cannot be updated")
+        }
+    }
+    
+    func getRandomStudentFromClass(className: String) -> Student2? {
+        let filteredStudents = students.filter {$0.name.lowercased().contains(className.lowercased()) }
+        return filteredStudents.randomElement()
+    }
+    
+    func saveData() {
+        // Speichern der Daten in UserDefaults
+        if let encodedData = try? JSONEncoder().encode(students) {
+            UserDefaults.standard.set(encodedData, forKey: "students2")
+        }
+    }
+    
+    func doesStudentExist(withName name: String) -> Bool {
+        return students.contains { $0.name.lowercased() == name.lowercased() }
+    }
+    
+    func moveStudents() {
+        for student in Database().students {
+            students.append(Student2(name: student.name, klasse: student.klasse, status: [StudentStatus(status: "richtig: \(student.richtig) \nfalsch: \(student.falsch) \nabwesend: \(student.abwesend)", datum: student.datum, fach: "Mathe")]))
+        }
+        saveData()
+    }
+    
+    func datum() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        return dateFormatter.string(from: Date())
+    }
+}
+
 // Schülerklasse
 class Student: Identifiable, Codable {
     var id = UUID()
@@ -59,9 +167,12 @@ class Database: ObservableObject {
                     students[index].falsch = falsch
                     students[index].richtig = richtig
                     students[index].abwesend = abwesend
+                    print("update")
                     saveData()
                 }
             }
+        } else {
+            print("cannot be updated")
         }
     }
     
@@ -82,8 +193,85 @@ class Database: ObservableObject {
     }
 }
 
+struct Einstellungen: View {
+    @AppStorage("rolle") var rolle = 1
+    @AppStorage("motivExternerBildschirm") var motivExternerBildschirm = 1
+    @StateObject var notificationManager = NotificationManager()
+    @AppStorage("task") private var task = ""
+    @AppStorage("Schülersperre") var schülersperre = true
+    @AppStorage("falscheantwort!Überspringen") var falscheantwortÜberspringen = true
+    @AppStorage("PunkteSammeln") var punkteSammeln = true
+    @AppStorage("händer") var händer = 1
+    @AppStorage("statusFarbe") var statusFarbe = true
+    
+    var body: some View {
+        Form {
+            Section("Mitteilungen") {
+                if notificationManager.hasPermission {
+                    HStack {
+                        Text("Sie erhalte immer eine Pushbenachrichtigung, wenn der Entwickler ein neues Update veröffentlicht")
+                        Spacer()
+                        Image(systemName: "checkmark.circle")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.green)
+                            .frame(width: 25, height: 25)
+                    }
+                } else {
+                    VStack {
+                        Text("Öffnen Sie die Einstellungen, um Pushbenachrichtigungen zu erhalten, um schneller auf dem neustem Stand zu sein")
+                        Button("Einstellungen öffnen") {
+                            Task{
+                                await notificationManager.request()
+                            }
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+                        }
+                    }
+                }
+            }
+            
+            Section("Rolle") {
+                Text("Die Rolle entscheidet nur für das Design der App")
+                    .font(.caption)
+                Picker(selection: $rolle, label: Text("Rolle")) {
+                    Text("Lehrer").tag(1)
+                    Text("Schüler").tag(2)
+                }
+            }
+            
+            Section("Design") {
+                Picker(selection: $händer, label: Text("Wählen Sie aus, ob Sie ein Rechtshänder oder ein Linkshänder sind")) {
+                    Text("Rechts").tag(1)
+                    Text("Links").tag(2)
+                }
+                // Toggle("Hintergrundfarbe beim Antworten der Schüler ändern", isOn: $statusFarbe)
+            }
+            
+            if rolle == 1 {
+                Section("Schülereinstellungen") {
+                    Toggle("Status der Schüler mit FaceID oder TouchID sperren", isOn: $schülersperre)
+                    Toggle("Bei der Besprechungsrunde wird ein neuer Schüler ausgewählt, wenn der vorherige Schüler eine falsche Antwort gibt", isOn: $falscheantwortÜberspringen)
+                }
+                Section("Externer Bildschirm") {
+                    Picker("Motiv auf dem Externen Bildschirm:", selection: $motivExternerBildschirm) {
+                        Text("Smiley").tag(1)
+                        Text("Uhr").tag(2)
+                    }
+                }
+            } else {
+                Section("Punkte") {
+                    Toggle("Sammle Punkte für jede gelöste Aufgabe", isOn: $punkteSammeln)
+                }
+            }
+        }
+        .onAppear {
+            task = ""
+        }
+    }
+}
+
 // ContentView
-struct SchülerEinstellungen: View {
+struct Schülereinstellungen: View {
     @ObservedObject var database = Database()
     @State private var studentName = ""
     @State private var studentLastName = ""
@@ -98,10 +286,15 @@ struct SchülerEinstellungen: View {
     @Environment(\.scenePhase) var scenePhase
     let defaults = UserDefaults.standard
     @AppStorage("Exit") var Exit = true
+    @State var resetAlert = false
+    @AppStorage("rolle") var rolle = 1
+    @StateObject var notificationManager = NotificationManager()
+    @AppStorage("task") private var task = ""
+    @AppStorage("Schülersperre") var schülersperre = true
     
     var body: some View {
         Form {
-            NavigationLink("Schüler") {
+            NavigationLink("Schülerstatus") {
                 VStack {
                     if isUnlocked == true || checkAuthenticateAvability() == false {
                         p1
@@ -153,15 +346,19 @@ struct SchülerEinstellungen: View {
                     if UIDevice.current.userInterfaceIdiom == .pad  {
                         Text("Sitzordnung")
                     } else {
-                        Text("Die Sitzordnung ist nur für das Ipad verfügbar")
+                        Text("Die Sitzordnung ist nur für das iPad verfügbar")
                     }
                 })
                 .disabled(UIDevice.current.userInterfaceIdiom == .phone)
             }
         }
+        .navigationTitle("Schüler")
         .onAppear {
             // Load items from UserDefaults when the view appears
             klassenListe = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
+        }
+        .onAppear {
+            task = ""
         }
     }
     
@@ -226,6 +423,8 @@ struct SchülerEinstellungen: View {
             }
         }
     }
+    
+    @State var studentSort = 1
     
     var p2: some View {
         ZStack {
@@ -342,12 +541,37 @@ struct SchülerEinstellungen: View {
                     }
                     .onDelete(perform: deleteStudent)
                 }
+                HStack {
+                    Spacer()
+                    Button("Status reseten") {
+                        resetAlert = true
+                    }
+                    .foregroundStyle(.red)
+                    Spacer()
+                        .frame(width: 20)
+                }
+                .alert("Sind Sie sich sicher, dass Sie den Status aller Schüler der Klasse \(studentKlasse) zurücksetzen wollen?", isPresented: $resetAlert) {
+                    Button("Abbrechen", role: .cancel) {
+                        resetAlert = false
+                    }
+                    Button("Zurücksetzen", role: .destructive) {
+                        for student in database.students {
+                            if student.klasse == studentKlasse {
+                                database.updateStatus(for: student, richtig: "0", falsch: "0", abwesend: "0")
+                            }
+                        }
+                        resetAlert = false
+                    }
+                }
                 .fullScreenCover(isPresented: $schülerHinzufügen) {
                     NavigationView {
                         ZStack {
                             List {
                                 VStack {
                                     TextField("Name", text: $studentName)
+                                        .onSubmit {
+                                            addStudentButton()
+                                        }
                                     if database.doesStudentExist(withName: "\(studentName) \(studentLastName)") {
                                         HStack {
                                             Text("Dieser Schüler existiert bereits schon")
@@ -373,17 +597,7 @@ struct SchülerEinstellungen: View {
                                 Spacer()
                                 if !database.doesStudentExist(withName: "\(studentName) \(studentLastName)") && studentName != "" {
                                     Button(action: {
-                                        if !database.doesStudentExist(withName: "\(studentName) \(studentLastName)") {
-                                            studentStatus = "?"
-                                            studentName = "\(studentName) \(studentLastName)"
-                                            let dateFormatter = DateFormatter()
-                                            dateFormatter.dateFormat = "dd.MM.yyyy"
-                                            let newStudent = Student(name: studentName, richtig: "0", falsch: "0", abwesend: "0", klasse: studentKlasse, datum: dateFormatter.string(from: Date()))
-                                            database.addStudent(student: newStudent)
-                                            studentName = ""
-                                            studentLastName = ""
-                                            schülerHinzufügen = false
-                                        }
+                                        addStudentButton()
                                     }, label: {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 15)
@@ -493,7 +707,7 @@ struct SchülerEinstellungen: View {
         var error: NSError?
 
         // check whether biometric authentication is possible
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) && schülersperre == true {
             // it's possible, so go ahead and use it
             let reason = "Authentifizieren Sie sich, um die Daten Ihrer Schüler zu bearbeiten"
 
@@ -520,6 +734,20 @@ struct SchülerEinstellungen: View {
             return true
         } else {
             return false
+        }
+    }
+    
+    func addStudentButton() {
+        if !database.doesStudentExist(withName: "\(studentName) \(studentLastName)") {
+            studentStatus = "?"
+            studentName = "\(studentName) \(studentLastName)"
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM.yyyy"
+            let newStudent = Student(name: studentName, richtig: "0", falsch: "0", abwesend: "0", klasse: studentKlasse, datum: dateFormatter.string(from: Date()))
+            database.addStudent(student: newStudent)
+            studentName = ""
+            studentLastName = ""
+            schülerHinzufügen = false
         }
     }
 }

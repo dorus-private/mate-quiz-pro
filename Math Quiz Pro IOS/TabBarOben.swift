@@ -7,6 +7,79 @@
 
 import SwiftUI
 
+struct ProblemBeschreibung: View {
+    var zeigen: Bool
+    var title: String
+    @Binding var beschreibung: String
+    
+    var body: some View {
+        if zeigen {
+            HStack {
+                Spacer()
+                    .frame(width: 20)
+                VStack {
+                    HStack {
+                        Text(title)
+                            .font(.title2)
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                    }
+                    HStack {
+                        Text("Beschreiben Sie das Problem:")
+                            .multilineTextAlignment(.leading)
+                        Spacer()
+                    }
+                    TextEditor(text: $beschreibung)
+                    Spacer()
+                        .frame(height: 10)
+                }
+                Spacer()
+                    .frame(width: 20)
+            }
+        }
+    }
+}
+
+struct Auswählen: View {
+    var selected: Bool
+    var title: String
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                    .frame(width: 20)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 15)
+                        .frame(height: 50)
+                    HStack {
+                        Spacer()
+                            .frame(width: 10)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 15)
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(.white)
+                            Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(selected ? .green : .gray)
+                            Spacer()
+                        }
+                        Spacer()
+                            .frame(width: 10)
+                        Text(title)
+                            .foregroundColor(.white)
+                        Spacer()
+                    }
+                }
+                Spacer()
+                    .frame(width: 20)
+            }
+            Spacer()
+                .frame(height: 10)
+        }
+    }
+}
+
 struct TabBarOben: View {
     @AppStorage("isAirPlayActive") var isAirplayActive = false
     @State var airplayHeight: CGFloat = 25
@@ -14,6 +87,18 @@ struct TabBarOben: View {
     @State var einstellungen = false
     @State var melekIcon = false
     @State var showIcon = false
+    @State var showFehlerMelden = false
+    @AppStorage("actuallyView") var actuallyView = "Unterricht"
+    @State var rechtschreibfehler = false
+    @State var rechtschreibfehlerBeschreibung = "-"
+    @State var absturz = false
+    @State var absturzBeschreibung = "-"
+    @State var funktionsFehler = false
+    @State var funktionsFehlerBeschreibung = "-"
+    @State var sonstige = false
+    @State var sonstigeÜberschrift = ""
+    @State var sonstigeBeschreibung = ""
+    @AppStorage("rolle") var rolle = 1
     
     var body: some View {
         HStack {
@@ -39,27 +124,71 @@ struct TabBarOben: View {
                     RoundedRectangle(cornerRadius: 15)
                         .frame(height: 50)
                         .foregroundColor(.white)
+                        .shadow(radius: rolle == 1 ? 0 : 5)
                     HStack {
-                        Text("AirPlay ist aktiviert")
+                        Text("AirPlay könnte aktiviert sein")
                             .foregroundColor(.black)
                             .padding(20)
                         Spacer()
-                        Image(systemName: "airplayvideo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: airplayHeight, height: airplayHeight)
-                            .foregroundColor(.blue)
-                            .padding(20)
-                            .onAppear {
-                                changeFrames()
-                            }
+                        if #available(iOS 17.0, *) {
+                            Image(systemName: "airplayvideo")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .symbolEffect(.variableColor, options: .repeating.speed(0.5))
+                                .foregroundColor(.blue)
+                                .padding(20)
+                        } else {
+                            Image(systemName: "airplayvideo")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: airplayHeight, height: airplayHeight)
+                                .foregroundColor(.blue)
+                                .padding(20)
+                                .onAppear {
+                                    changeFrames()
+                                }
+                        }
                     }
                 }
                 Spacer()
                     .frame(width: 10)
+            } else if rolle != 1 {
+                SocialMedia()
+                    .frame(height: 67.5)
+                    .onTapGesture {
+                        let Username =  "leon.apps_de" // Your Instagram Username here
+                        let appURL = URL(string: "instagram://user?username=\(Username)")!
+                        let application = UIApplication.shared
+                        
+                        if application.canOpenURL(appURL) {
+                            application.open(appURL)
+                        } else {
+                            // if Instagram app is not installed, open URL inside Safari
+                            let webURL = URL(string: "https://www.instagram.com/leon.apps_de/")!
+                            application.open(webURL)
+                        }
+                    }
             } else {
                 Spacer()
             }
+            /*
+            Button(action: {
+               showFehlerMelden = true
+            }, label: {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 15)
+                        .frame(width: 50, height: 50)
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(.yellow)
+                }
+            })
+            Spacer()
+                .frame(width: 20)
+             */
             Button(action: {
                 versionView = true
             }, label: {
@@ -76,6 +205,113 @@ struct TabBarOben: View {
             })
             Spacer()
                 .frame(width: 20)
+        }
+        .sheet(isPresented: $showFehlerMelden) {
+            NavigationView {
+                VStack {
+                    Text("Fehlermeldung für den Bereich \"\(actuallyView)\"")
+                        .font(.title)
+                        .multilineTextAlignment(.center)
+                        .padding(20)
+                    HStack {
+                        Spacer()
+                            .frame(width: 20)
+                        Text("Sie haben ein Fehler im Bereich \(actuallyView) gefunden? \n Dann teilen Sie uns diesen mit, indem Sie den folgenden Schritten folgen")
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                            .frame(width: 20)
+                    }
+                    Spacer()
+                    NavigationLink(destination: {
+                        VStack {
+                            ScrollView {
+                                VStack {
+                                    Text("Wählen Sie die Art des Fehlers aus")
+                                        .font(.title)
+                                        .multilineTextAlignment(.center)
+                                        .padding(20)
+                                    Button(action: {
+                                        rechtschreibfehler.toggle()
+                                    }, label: {
+                                        Auswählen(selected: rechtschreibfehler, title: "Rechtschreibfehler")
+                                    })
+                                    Button(action: {
+                                        absturz.toggle()
+                                    }, label: {
+                                        Auswählen(selected: absturz, title: "Unerwarteter Absturz")
+                                    })
+                                    Button(action: {
+                                        funktionsFehler.toggle()
+                                    }, label: {
+                                        Auswählen(selected: funktionsFehler, title: "Funktionsfehler")
+                                    })
+                                    Button(action: {
+                                        sonstige.toggle()
+                                    }, label: {
+                                        Auswählen(selected: sonstige, title: "Sonstige")
+                                    })
+                                    if sonstige {
+                                        HStack {
+                                            Spacer()
+                                                .frame(width: 20)
+                                            VStack {
+                                                Text("Bitte geben Sie eine Überschrift für den nicht genannten Fehler")
+                                                Spacer()
+                                                    .frame(height: 10)
+                                                TextField("Überschrift", text: $sonstigeÜberschrift)
+                                                    .textFieldStyle(.roundedBorder)
+                                            }
+                                            Spacer()
+                                                .frame(width: 20)
+                                        }
+                                    }
+                                }
+                            }
+                            Spacer()
+                            NavigationLink(destination: {
+                                VStack {
+                                    ScrollView {
+                                        VStack {
+                                            ProblemBeschreibung(zeigen: rechtschreibfehler, title: "Rechtschreibfehler", beschreibung: $rechtschreibfehlerBeschreibung)
+                                            ProblemBeschreibung(zeigen: absturz, title: "Unerwarteter Absturz", beschreibung: $absturzBeschreibung)
+                                            ProblemBeschreibung(zeigen: funktionsFehler, title: "Funktionsfehler", beschreibung: $funktionsFehlerBeschreibung)
+                                            ProblemBeschreibung(zeigen: rechtschreibfehler, title: sonstigeÜberschrift, beschreibung: $sonstigeBeschreibung)
+                                        }
+                                    }
+                                    Spacer()
+                                    Button(action: {
+                                        UIApplication.shared.open(makeEmailURL(subject: "Fehlermeldung bei Mathe Quiz Pro", body: "Sehr geehrter Entwickler, \nich nutze oft Ihre App Mathe Quiz Pro. Dabei sind bei mir einige Fehler aufgetreten, die ich Ihnen mitteilen möchte: \n \nRechtschreibfehler:\n\(rechtschreibfehlerBeschreibung)\n \nUnerwarteter Absturz: \n\(absturzBeschreibung) \n \nFunktionsfehler: \n \n\(funktionsFehlerBeschreibung) \n \n\(sonstigeÜberschrift) \n\(sonstigeBeschreibung) \n \nIch würde mir gerne wünschen, dass diese Fehler in den kommenden Updates behoben werden. \n \nVielen Dank im Voraus."))
+                                    }, label: {
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 15)
+                                                .frame(height: 50)
+                                            Text("Weiter")
+                                                .foregroundStyle(.white)
+                                        }
+                                    })
+                                    .padding(20)
+                                }
+                            }, label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .frame(height: 50)
+                                    Text("Weiter")
+                                        .foregroundStyle(.white)
+                                }
+                            })
+                            .padding(20)
+                        }
+                    }, label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 15)
+                                .frame(height: 50)
+                            Text("Weiter")
+                                .foregroundStyle(.white)
+                        }
+                    })
+                    .padding(20)
+                }
+            }
         }
         .fullScreenCover(isPresented: $melekIcon) {
             GeometryReader { geo in
@@ -129,6 +365,10 @@ struct TabBarOben: View {
                         }
                     }
                 } else {
+                    ForEach(0..<200) { _ in
+                        Star()
+                            .padding(5)
+                    }
                     HStack {
                         ZStack {
                             RoundedRectangle(cornerRadius: 15)
@@ -175,11 +415,12 @@ struct TabBarOben: View {
                     }
                     Spacer()
                 }
+                .preferredColorScheme(.dark)
             }
         }
         .sheet(isPresented: $versionView) {
             NavigationView {
-                ZStack {
+                VStack {
                     List {
                         Section("2.0") {
                             NavigationLink("2.0", destination: {
@@ -203,27 +444,62 @@ struct TabBarOben: View {
                                 WasIstNeuView4_0()
                                     .navigationTitle("4.0")
                             })
+                        }
+                        Section("5.0") {
                             NavigationLink("5.0", destination: {
                                 WasIstNeuView5_0()
-                                    .navigationTitle("4.1")
+                                    .navigationTitle("5.0")
+                            })
+                        }
+                        Section("6.0") {
+                            NavigationLink("6.0", destination: {
+                                WasIstNeu6_0()
+                                    .navigationTitle("6.0")
+                            })
+                            NavigationLink("6.1", destination: {
+                                WasIstNeu6_1()
+                                    .navigationTitle("6.1")
+                            })
+                            NavigationLink("6.2", destination: {
+                                WasIstNeu6_2()
+                                    .navigationTitle("6.2")
+                            })
+                            NavigationLink("6.3", destination: {
+                                WasIstNeu6_3()
+                                    .navigationTitle("6.3")
+                            })
+                            NavigationLink("6.3.1", destination: {
+                                WasIstNeu6_3_1()
+                                    .navigationTitle("6.3.1")
+                            })
+                        }
+                        Section("7.0") {
+                            NavigationLink("7.0", destination: {
+                                WasIstNeu7()
+                                    .navigationTitle("7.0")
+                            })
+                            NavigationLink("7.0.1", destination: {
+                                WasIstNeu7_0_1()
+                                    .navigationTitle("7.0.1")
+                            })
+                            NavigationLink("7.1", destination: {
+                                WasIstNeu7_1()
+                                    .navigationTitle("7.1")
                             })
                         }
                     }
                     .navigationTitle("Was ist neu?")
-                    VStack {
-                        Spacer()
-                        Button(action: {
-                            versionView = false
-                        }, label: {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 15)
-                                    .frame(height: 50)
-                                Text("Fertig")
-                                    .foregroundColor(.white)
-                            }
-                        })
-                        .padding(20)
-                    }
+                    Button(action: {
+                        versionView = false
+                    }, label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 15)
+                                .frame(height: 50)
+                            Text("Fertig")
+                                .foregroundColor(.white)
+                        }
+                    })
+                    .padding(20)
                 }
             }
         }
@@ -238,6 +514,38 @@ struct TabBarOben: View {
         }
         withAnimation(.easeOut(duration: 3.0)) {
             airplayHeight = 20
+        }
+    }
+    
+    private func makeEmailURL(subject: String, body: String) -> URL {
+        let subjectEncoded = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        let bodyEncoded = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        
+        let gmailUrl = URL(string: "googlegmail://co?to=leonsular@gmail.com&subject=\(subjectEncoded)&body=\(bodyEncoded)")
+        let yahooMail = URL(string: "ymail://mail/compose?to=leon.sular@gmail.com&subject=\(subjectEncoded)&body=\(bodyEncoded)")
+        let defaultUrl = URL(string: "mailto:leon.sular@gmail.com?subject=\(subjectEncoded)&body=\(bodyEncoded)")
+        
+        if let gmailUrl = gmailUrl, UIApplication.shared.canOpenURL(gmailUrl) {
+            return gmailUrl
+        } else if let yahooMail = yahooMail, UIApplication.shared.canOpenURL(yahooMail) {
+            return yahooMail
+        }
+        
+        return defaultUrl!
+    }
+}
+
+struct SocialMedia: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .fill(LinearGradient(gradient: Gradient(colors: [.purple, .yellow, .pink]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                .shadow(radius: 5)
+                .padding(10)
+            Text("Folgen Sie uns auf Instagram")
+                .multilineTextAlignment(.center)
+                .foregroundColor(.white)
+                .padding(10)
         }
     }
 }

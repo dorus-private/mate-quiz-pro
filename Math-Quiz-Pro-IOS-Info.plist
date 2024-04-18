@@ -2,20 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
+	<key>NSCameraUsageDescription</key>
 	<string></string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.leon.mathquizpro</string>
+	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Erlauben Sie den Zugriff auf Face ID bzw. Touch ID, um die Daten Ihrer Schüler noch mehr zu schützen</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Erlauben Sie den Zugriff auf das Microphon, damit die App die aktuelle Lautstärke in der Klasse messen kann</string>
-	<key>Privacy — Local Network Usage Description</key>
-	<string>Erlauben Sie den Zugriff, damit Sie einen Datenaustausch mit anderen in der Klasse machen können</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_nearby-devices._tcp</string>
-		<string>_nearby-devices._upd</string>
+		<string>_superapp._tcp</string>
+	</array>
+	<key>Privacy — Local Network Usage Description</key>
+	<string>Erlauben Sie den Zugriff, damit Sie einen Datenaustausch mit anderen in der Klasse machen können</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

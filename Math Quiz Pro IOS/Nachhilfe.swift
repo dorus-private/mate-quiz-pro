@@ -13,6 +13,7 @@ struct RotateDevice: View {
     @State var image = ""
     @State var degrees = 0.0
     let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    @AppStorage("task") private var task = ""
     
     var body: some View {
         VStack {
@@ -31,6 +32,7 @@ struct RotateDevice: View {
         }
         .foregroundColor(.mint)
         .onAppear {
+            task = ""
             if UIDevice.current.userInterfaceIdiom == .phone {
                 if verticalDrehen {
                     image = "iphone.gen1.landscape"
@@ -195,8 +197,28 @@ struct Nachhilfe: View {
                                 }
                             })
                             spacerH15
+                            /*
                             NavigationLink(destination: {
-                                
+                                ScrollView {
+                                    HStack {
+                                        Spacer()
+                                            .frame(width: 20)
+                                        VStack {
+                                            Text("I. Potenzgleichungen")
+                                                .font(.title)
+                                                .foregroundStyle(.indigo)
+                                            spacerH20
+                                            Text("Es gibt mehrere Arten von Potenzgleichungen:")
+                                                .multilineTextAlignment(.center)
+                                                .foregroundStyle(.mint)
+                                            spacerH15
+                                            
+                                        }
+                                        Spacer()
+                                            .frame(width: 20)
+                                    }
+                                }
+                                .navigationTitle("Potenz und Wurzelgleichungen")
                             }, label: {
                                 HStack {
                                     Spacer()
@@ -204,7 +226,7 @@ struct Nachhilfe: View {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 15)
                                             .frame(height: 50)
-                                            .foregroundStyle(.gray)
+                                            .foregroundStyle(.green)
                                         Text("Potenz und Wurzel Gleichungen")
                                             .foregroundColor(.white)
                                     }
@@ -212,7 +234,7 @@ struct Nachhilfe: View {
                                         .frame(width: 20)
                                 }
                             })
-                            .disabled(true)
+                             */
                             Spacer()
                         }
                         .navigationTitle("Potenzen und Potenzgesetze")

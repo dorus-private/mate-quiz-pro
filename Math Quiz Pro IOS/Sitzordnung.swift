@@ -56,7 +56,8 @@ struct Sitzordnung: View {
                     GeometryReader { geo in
                         VStack {
                             if #available(iOS 17.0, *) {
-                                TipView(tischTip, arrowEdge: .bottom)
+                                TipView(tischTip, arrowEdge: .none)
+                                    .padding(.horizontal, 20)
                             }
                             if geo.size.width < geo.size.height {
                                 RotateDevice(verticalDrehen: false)

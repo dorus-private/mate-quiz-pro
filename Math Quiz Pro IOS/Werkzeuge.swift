@@ -9,15 +9,31 @@ import SwiftUI
 
 struct Werkzeuge: View {
     @AppStorage("micPermission") var micPermission = false
-    
+    @State var docu = false
     var body: some View {
-        Lautstärke()
-            .onAppear {
-                micPermission = true
+        Form {
+            NavigationLink("Lautstärke Messung") {
+                Lautstärke()
+                    .onAppear {
+                        micPermission = true
+                    }
+                    .navigationBarHidden(false)
+                    .navigationTitle("Lautstärke Messung")
+                    .navigationBarTitleDisplayMode(.inline)
             }
-            .navigationBarHidden(false)
-            .navigationTitle("Lautstärke Messung")
-            .navigationBarTitleDisplayMode(.inline)
+            /*
+            Button("Dokumentenkamera") {
+                docu = true
+            }
+            .foregroundColor(.white)
+             */
+        }
+        .navigationTitle("Werkzeuge")
+        .sheet(isPresented: $docu) {
+            CameraFinalView()
+                .navigationTitle("Dokumentenkamera")
+        }
+        
     }
 }
 

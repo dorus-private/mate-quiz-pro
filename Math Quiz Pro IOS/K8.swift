@@ -19,7 +19,6 @@ struct K8: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @State var step = 0
-    @State var eingabe = "5"
     @State var gesammtAufgaben = 5
     @AppStorage("task") private var task = ""
     @State var aufgaben = [""]
@@ -31,6 +30,9 @@ struct K8: View {
     @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
     @State var schüler = ""
     @State var student = Student(name: "Test", richtig: "0", falsch: "0", abwesend: "", klasse: "k", datum: "")
+    @AppStorage("rolle") var rolle = 1
+    @AppStorage("falscheantwort!Überspringen") var falscheantwortÜberspringen = true
+    @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
     
     var body: some View {
         ZStack {
@@ -57,15 +59,57 @@ struct K8: View {
             
             VStack {
                 if step == 1 {
+                    Text("Aufgaben Anzahl einstellen")
+                        .font(.title)
+                        .padding(20)
                     Spacer()
-                    Text("\(eingabe) Aufgaben")
-                    Spacer()
-                    KeyPad(string: $eingabe)
-                    Spacer()
-                    Text("Die Anzahl der Aufgaben muss über 5 oder 5 sein, sonst können Sie nicht weiter drücken")
-                        .font(.caption2)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 450)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                if gesammtAufgaben != 5 {
+                                    gesammtAufgaben -= 1
+                                }
+                            }
+                        }, label: {
+                            ZStack {
+                                Circle()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(gesammtAufgaben == 5 ? .gray : .red)
+                                RoundedRectangle(cornerRadius: 5)
+                                    .frame(width: 35, height: 7.5)
+                                    .foregroundColor(.white)
+                            }
+                        })
+                        if #available(iOS 16.0, *) {
+                            Text("\(gesammtAufgaben)")
+                                .font(.title2)
+                                .padding(15)
+                                .contentTransition(.numericText())
+                        } else {
+                            Text("\(gesammtAufgaben)")
+                                .font(.title2)
+                                .padding(15)
+                        }
+                        Button(action: {
+                            withAnimation {
+                                gesammtAufgaben += 1
+                            }
+                        }, label: {
+                            ZStack {
+                                Circle()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(.green)
+                                RoundedRectangle(cornerRadius: 5)
+                                    .frame(width: 35, height: 7.5)
+                                    .foregroundColor(.white)
+                                RoundedRectangle(cornerRadius: 5)
+                                    .frame(width: 7.5, height: 35)
+                                    .foregroundColor(.white)
+                            }
+                        })
+                        Spacer()
+                    }
                     Spacer()
                 } else if step == 2 {
                     Text("Bitte wählen Sie eine Klasse aus, aus der zufällige Schüler in der Besprechungsrunde erscheinen werden")
@@ -99,7 +143,7 @@ struct K8: View {
                     }
                 } else if step == 3 {
                     Spacer()
-                    CounterView()
+                    CounterView(bigText: false)
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
                                 withAnimation(.easeIn(duration: 0.75)) {
@@ -127,22 +171,26 @@ struct K8: View {
                     }
                 } else if step == 5 {
                     Spacer()
-                    Image(systemName: "person.3.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.accentColor)
-                        .padding(20)
-                    Text("Besprechen Sie im nächsten Schritt die Aufgaben mit der gesammten Klasse")
-                        .font(.largeTitle)
-                        .padding(20)
-                        .multilineTextAlignment(.center)
-                    HStack {
-                        Spacer()
-                            .frame(width: 20)
-                        Text("Die Schüler können die Lösungen der Aufgaben auf dem externen Bildschirm nicht sehen")
+                    if rolle == 1 {
+                        Image(systemName: "person.3.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.accentColor)
+                            .padding(20)
+                        Text("Besprechen Sie im nächsten Schritt die Aufgaben mit der gesammten Klasse")
+                            .font(.largeTitle)
+                            .padding(20)
                             .multilineTextAlignment(.center)
-                        Spacer()
-                            .frame(width: 20)
+                        HStack {
+                            Spacer()
+                                .frame(width: 20)
+                            Text("Die Schüler können die Lösungen der Aufgaben auf dem externen Bildschirm nicht sehen")
+                                .multilineTextAlignment(.center)
+                            Spacer()
+                                .frame(width: 20)
+                        }
+                    } else {
+                        Text("Kontrolliere deine Lösung")
                     }
                 } else if step == 6 {
                     Spacer()
@@ -167,7 +215,7 @@ struct K8: View {
                             }
                         Text(schüler)
                             .font(.title)
-                            .foregroundColor(.white)
+                            .foregroundColor(rolle == 1 ? .white : .black)
                         HStack {
                             Spacer()
                             Button(action: {
@@ -230,7 +278,7 @@ struct K8: View {
                 if selectedClass == "" || step != 6 {
                     HStack {
                         if step != 3 {
-                            if step == 0 {
+                            if step <= 2 {
                                 Spacer()
                                     .frame(width: 20)
                                 Button(action: {
@@ -241,23 +289,25 @@ struct K8: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 50, height: 50)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(rolle == 1 ? .white : .cyan)
+                                        .shadow(radius: rolle == 1 ? 0 : 5)
                                         .cornerRadius(15)
                                 })
                             }
                             Button(action: {
-                                gesammtAufgaben = (Int(eingabe) ?? 5) + 2
                                 if step == 4 {
                                     if tasksGenerated != gesammtAufgaben - 3 {
                                         tasksGenerated += 1
                                         task = aufgaben[tasksGenerated]
+                                        punkte += 1
                                     } else {
                                         step += 1
                                         task = "Besprechen"
                                         tasksGenerated = 0
                                     }
                                 } else if step == 1 {
-                                    if klassenListe == [] {
+                                    gesammtAufgaben += 2
+                                    if klassenListe == [] || rolle == 2 {
                                         step += 2
                                     } else {
                                         step += 1
@@ -278,7 +328,7 @@ struct K8: View {
                                     task = ""
                                     lösung = ""
                                     task = ""
-                                    gesammtAufgaben = 0
+                                    gesammtAufgaben = 5
                                 } else if step == 6 {
                                     letzterSchritt()
                                 } else {
@@ -288,7 +338,6 @@ struct K8: View {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 15)
                                         .frame(height: 50)
-                                        .foregroundColor(eingabe == "4" || eingabe == "3" || eingabe == "2" || eingabe == "1" || eingabe == "0" || step == 2 && selectedClass == "" ? .gray : .accentColor)
                                     Text("Weiter")
                                         .foregroundColor(.white)
                                 }
@@ -302,7 +351,6 @@ struct K8: View {
                                     }
                                 })
                             })
-                            .disabled(eingabe == "4" || eingabe == "3" || eingabe == "2" || eingabe == "1" || eingabe == "0")
                         }
                     }
                 }
@@ -339,11 +387,25 @@ struct K8: View {
         }
         if falsch {
             Database().updateStatus(for: student, richtig: "\(sR)", falsch: "\(sF + 1)", abwesend: "\(sA)")
+            if falscheantwortÜberspringen {
+                falscheAntwortSchülerBekommen()
+            }
         }
         if abwesend {
             Database().updateStatus(for: student, richtig: "\(sR)", falsch: "\(sF)", abwesend: "\(sA + 1)")
+            if falscheantwortÜberspringen {
+                falscheAntwortSchülerBekommen()
+            }
         }
         letzterSchritt()
+    }
+    
+    func falscheAntwortSchülerBekommen() {
+        let name = student.name
+        getStudent()
+        if student.name == name {
+            falscheAntwortSchülerBekommen()
+        }
     }
     
     func letzterSchritt() {

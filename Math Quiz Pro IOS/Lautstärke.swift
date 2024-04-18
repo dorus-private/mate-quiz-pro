@@ -32,7 +32,7 @@ class MicrophoneMonitor: ObservableObject {
         if audioSession.recordPermission != .granted {
             audioSession.requestRecordPermission { (isGranted) in
                 if !isGranted {
-                    fatalError("You must allow audio recording for this demo to work")
+                    
                 }
             }
         }
