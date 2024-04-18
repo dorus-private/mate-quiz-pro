@@ -25,6 +25,7 @@ struct ExternalView: View {
     @State var color: Color = .blue
     @AppStorage("klassenKamerad") private var klassenKamerad = ""
     @AppStorage("StatusHausnummern") var statusHausnummern = ""
+    @AppStorage("schriftGrößeExternerBildschirm") var schriftgröße = 250.0
     
     var body: some View {
         ZStack {
@@ -37,13 +38,16 @@ struct ExternalView: View {
                             AnalogClockView(foregroundColor: $color)
                         }
                     }
+                } else if task == "Dies ist ein langer Text, der zum einstellen der Textgröße auf dem Externen Bildschirm hilft" {
+                    Text(task)
+                        .font(.system(size: schriftgröße))
                 } else if task == "Counter" {
                     CounterView(bigText: true)
                         .padding(100)
                 } else if task == "Hausnummer" {
                     ZStack {
                         Text(klassenKamerad)
-                            .font(.system(size: 250))
+                            .font(.system(size: schriftgröße))
                     }
                 } else if task == "Ende" {
                     ZStack {
@@ -54,10 +58,10 @@ struct ExternalView: View {
                         FireworksView()
                         VStack {
                             Text("Herzlichen Glückwunsch \(klassenKamerad)")
-                                .font(.system(size: 250))
+                                .font(.system(size: schriftgröße))
                                 .foregroundStyle(.white)
                             Text("Du hast gewonnen!!!")
-                                .font(.system(size: 175))
+                                .font(.system(size: schriftgröße / 3.5))
                                 .foregroundStyle(.white)
                         }
                     }
@@ -68,28 +72,28 @@ struct ExternalView: View {
                         .foregroundColor(.accentColor)
                         .padding(20)
                     Text("Besprechung")
-                        .font(.system(size: 250))
+                        .font(.system(size: schriftgröße))
                 } else if task == "lautstärke" {
                     LautstärkeAmpel()
                 } else if task == "sss" || task == "Ssw" || task == "sws" || task == "wsw" || task == "x2" || task == "x3" || task == "x4" || task == "2^x" || task == "5*2^x" || task == "4^x" || task == "DEF" || task == "GHI" || task == "JKL" || task == "MNO" || task == "PQR" {
                     if task == "x2" || task == "x3" || task == "x4" {
                         Text("Ordne das passende Kärtchen zur Abbildung zu")
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 200))
+                            .font(.system(size: (schriftgröße / 5) * 4))
                             .padding(20)
                     } else if task == "2^x" || task == "5*2^x" || task == "4^x" {
                         Text("Bestimme die Funktionsgleichung der Exponentialfunktion")
-                            .font(.system(size: 200))
+                            .font(.system(size: (schriftgröße / 5) * 4))
                             .multilineTextAlignment(.center)
                             .padding(20)
                     } else if task == "DEF" || task == "GHI" || task == "JKL" || task == "MNO" || task == "PQR" {
                         Text("Nenne den Satz des Pythagoras aus diesem Dreieck")
-                            .font(.system(size: 200))
+                            .font(.system(size: (schriftgröße / 5) * 4))
                             .multilineTextAlignment(.center)
                             .padding(20)
                     } else {
                         Text("Bestimme den Kongruenzsatz")
-                            .font(.system(size: 200))
+                            .font(.system(size: (schriftgröße / 5) * 4))
                             .multilineTextAlignment(.center)
                             .padding(20)
                     }
@@ -114,7 +118,7 @@ struct ExternalView: View {
                                         .foregroundColor(.blue)
                                     Text("f(x) = x²")
                                         .foregroundStyle(.white)
-                                        .font(.system(size: 200))
+                                        .font(.system(size: (schriftgröße / 5) * 4))
                                 }
                                 .padding(20)
                                 ZStack {
@@ -123,7 +127,7 @@ struct ExternalView: View {
                                         .frame(maxHeight: 225)
                                     Text("f(x) = x³")
                                         .foregroundStyle(.white)
-                                        .font(.system(size: 200))
+                                        .font(.system(size: (schriftgröße / 5) * 4))
                                 }
                                 .padding(20)
                                 ZStack {
@@ -132,7 +136,7 @@ struct ExternalView: View {
                                         .frame(maxHeight: 225)
                                     Text("f(x) = x⁴")
                                         .foregroundStyle(.white)
-                                        .font(.system(size: 200))
+                                        .font(.system(size: (schriftgröße / 5) * 4))
                                 }
                                 .padding(20)
                                 Spacer()
@@ -145,7 +149,7 @@ struct ExternalView: View {
                                         .frame(height: 500)
                     } else {
                         Text(task)
-                            .font(.system(size: 250))
+                            .font(.system(size: schriftgröße))
                             .multilineTextAlignment(.center)
                     }
                 }
@@ -156,7 +160,7 @@ struct ExternalView: View {
                     Spacer()
                     HStack {
                         Text("Made with Mathe Quiz Pro")
-                            .font(.system(size: 50))
+                            .font(.system(size: schriftgröße / 5))
                             .foregroundStyle(task == "Ende" ? .white : .black)
                         Spacer()
                             .frame(width: 25)

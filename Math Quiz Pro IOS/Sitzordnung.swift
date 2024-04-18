@@ -306,6 +306,7 @@ struct Tisch: View {
                     .foregroundColor(.white)
                 Text(studentName)
                     .foregroundStyle(.blue)
+                    .frame(width: width - 7.5, height: height - 7.5)
             }
         })
         .onReceive(timer) { _ in

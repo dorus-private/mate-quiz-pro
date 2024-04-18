@@ -26,6 +26,8 @@ struct Hausnummern: View {
     @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
     @AppStorage("händer") var händer = 1
     @AppStorage("statusFarbe") var statusFarbe = true
+    @State var stateSchüler = ""
+    @State var falscheSchülerListe: [String]  = []
     
     var step0: some View {
         VStack {
@@ -40,7 +42,7 @@ struct Hausnummern: View {
                     .padding(.bottom, 10)
                 Spacer()
             }
-            Text("Die Schüler müssen nacheinander von 1 bis ins unendliche zählen, doch hierbei gibt es mehrere Schwierigkeiten: \n1. Sie müssen die Zahlen, die eine 3 oder eine 7 enthalten überspringen \n2. Sie müssen die Zahlen, die durch 3 oder 7 teilbar sind auch überspringen \n \nSagt ein Schüler eine falsche Zahl, so fliegt er aus der Runde. \n \n \nFür die Reihenfolge werden Ihnen die Schüler auf Ihr Gerät und auf dem extern Bildschirm angezeigt, wenn Sie die Sitzordnung unter dem Tab \"Schüler\" konfiguriert haben. \n \nUm zu prüfen, ob die Schüler richtig antworten, sehen nur Sie auf Ihrem Bildschirm die Antwort.")
+            Text("Die Schüler müssen nacheinander von 1 bis ins Unendliche zählen, doch hierbei gibt es mehrere Schwierigkeiten: \n1. Sie müssen die Zahlen, die eine 3 oder eine 7 enthalten überspringen \n2. Sie müssen die Zahlen, die durch 3 oder 7 teilbar sind auch überspringen \n \nSagt ein Schüler eine falsche Zahl, so fliegt er aus der Runde. \n \n \nFür die Reihenfolge werden Ihnen die Schüler auf Ihr Gerät und auf dem extern Bildschirm angezeigt, wenn Sie die Sitzordnung unter dem Tab \"Schüler\" konfiguriert haben. \n \nUm zu prüfen, ob die Schüler richtig antworten, sehen nur Sie auf Ihrem Bildschirm die Antwort.")
                 .multilineTextAlignment(.leading)
                 .padding(.leading, 20)
                 .padding(.trailing, 20)
@@ -93,13 +95,6 @@ struct Hausnummern: View {
     
     var step3: some View {
         ZStack {
-            if statusHausnummern == "r" {
-                Color.green
-                    .ignoresSafeArea(.all)
-            } else if statusHausnummern == "f" {
-                Color.red
-                    .ignoresSafeArea(.all)
-            }
             VStack {
                 if schüler.count == 1 {
                     Spacer()
@@ -120,7 +115,33 @@ struct Hausnummern: View {
                     Text("\(klassenKamerad)")
                         .font(.title)
                         .padding(20)
+                    if falscheSchülerListe.contains(klassenKamerad) {
+                        Text("Achtung, dieser Schüler hatte in der letzten Runde möglicherweise die Aufgabe falsch beantwortet")
+                            .foregroundStyle(.red)
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 100, maxHeight: 100)
+                            .foregroundColor(.yellow)
+                    }
                     Spacer()
+                    if lösung != 1 {
+                        Button(action: {
+                            falscheSchülerListe.append(stateSchüler)
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                lösung = 1
+                            }
+                        }, label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 15)
+                                    .foregroundColor(.red)
+                                Text("Lösung zurücksetzen")
+                                    .font(.title)
+                                    .foregroundStyle(.white)
+                            }
+                        })
+                        .frame(maxWidth: 200, maxHeight: 100)
+                    }
                 }
             }
             HStack {
@@ -241,6 +262,8 @@ struct Hausnummern: View {
                             if task == "Ende" && step == 3 {
                                 step = 0
                                 schüler = []
+                                falscheSchülerListe = []
+                                stateSchüler = ""
                             } else {
                                 step += 1
                                 if step == 2 {
@@ -451,6 +474,7 @@ struct Hausnummern: View {
                 let sR = (Int(student.richtig) ?? 0)
                 let sF = (Int(student.falsch) ?? 0)
                 let sA = (Int(student.abwesend) ?? 0)
+                stateSchüler = student.name
                 if richtig {
                     Database().updateStatus(for: student, richtig: "\(sR + 1)", falsch: "\(sF)", abwesend: "\(sA)")
                     if index < schüler.count - 1  {

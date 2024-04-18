@@ -145,7 +145,8 @@ class Database: ObservableObject {
         // Laden der gespeicherten Daten aus UserDefaults
         if let data = UserDefaults.standard.data(forKey: "students"),
            let decodedStudents = try? JSONDecoder().decode([Student].self, from: data) {
-            self.students = decodedStudents
+            self.students = decodedStudents.sorted {$0.name < $1.name}
+            saveData()
         } else {
             self.students = []
         }
@@ -183,6 +184,7 @@ class Database: ObservableObject {
 
     func saveData() {
         // Speichern der Daten in UserDefaults
+        self.students = students.sorted {$0.name < $1.name}
         if let encodedData = try? JSONEncoder().encode(students) {
             UserDefaults.standard.set(encodedData, forKey: "students")
         }
@@ -203,6 +205,8 @@ struct Einstellungen: View {
     @AppStorage("PunkteSammeln") var punkteSammeln = true
     @AppStorage("händer") var händer = 1
     @AppStorage("statusFarbe") var statusFarbe = true
+    @AppStorage("schriftGrößeExternerBildschirm") var schriftgröße = 250.0
+    @State var showSchriftgröße = false
     
     var body: some View {
         Form {
@@ -257,6 +261,10 @@ struct Einstellungen: View {
                         Text("Smiley").tag(1)
                         Text("Uhr").tag(2)
                     }
+                    Button("Schriftgröße für den Externen Bildschirm einstellen") {
+                        task = "Dies ist ein langer Text, der zum einstellen der Textgröße auf dem Externen Bildschirm hilft"
+                        showSchriftgröße.toggle()
+                    }
                 }
             } else {
                 Section("Punkte") {
@@ -266,6 +274,35 @@ struct Einstellungen: View {
         }
         .onAppear {
             task = ""
+        }
+        .sheet(isPresented: $showSchriftgröße) {
+            VStack {
+                Text("Textgröße für den Externen Bildschirm")
+                    .font(.title)
+                    .padding(20)
+                Text("Versichern Sie sich, dass Sie die Bildschirm Synchronisierung aktiviert haben und Sie jetzt auf dem Externen Bildschirm schauen können")
+                    .padding(20)
+                Spacer()
+                Slider(value: $schriftgröße, in: 25...500)
+                    .padding(20)
+                Text("Ihre Schriftgröße:")
+                    .padding(10)
+                Text("Aa")
+                    .font(.largeTitle)
+                Spacer()
+                Button(action: {
+                    task = ""
+                    showSchriftgröße.toggle()
+                }, label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 15)
+                        Text("Fertig")
+                            .foregroundStyle(.white)
+                    }
+                    .frame(height: 50)
+                })
+                .padding(20)
+            }
         }
     }
 }
@@ -291,6 +328,7 @@ struct Schülereinstellungen: View {
     @StateObject var notificationManager = NotificationManager()
     @AppStorage("task") private var task = ""
     @AppStorage("Schülersperre") var schülersperre = true
+    @FocusState var textFieldFocused: Bool
     
     var body: some View {
         Form {
@@ -380,6 +418,12 @@ struct Schülereinstellungen: View {
                     ZStack {
                         List {
                             TextField("Klasse", text: $klasseHinzufügenText)
+                                .focused($textFieldFocused)
+                                .onSubmit {
+                                    klassenListe.append(klasseHinzufügenText)
+                                    saveKlassenListToUserDefaults()
+                                    klasseHinzufügen = false
+                                }
                         }
                         .navigationBarItems(trailing:
                         Button("Abbrechen") {
@@ -585,7 +629,11 @@ struct Schülereinstellungen: View {
                                 }
                                 Section("") {
                                     TextField("Nachname (optional)", text: $studentLastName)
+                                        .onSubmit {
+                                            addStudentButton()
+                                        }
                                 }
+                                
                             }
                             .navigationBarItems(trailing:
                                                     Button("Abbrechen") {
