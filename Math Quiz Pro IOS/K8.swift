@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct K8: View {
     @State var termeMitMehrerenVariablen = false
@@ -300,6 +301,7 @@ struct K8: View {
                                         tasksGenerated += 1
                                         task = aufgaben[tasksGenerated]
                                         punkte += 1
+                                        WidgetCenter.shared.reloadAllTimelines()
                                     } else {
                                         step += 1
                                         task = "Besprechen"

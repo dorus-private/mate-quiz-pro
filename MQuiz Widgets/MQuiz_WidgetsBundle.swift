@@ -12,6 +12,5 @@ import SwiftUI
 struct MQuiz_WidgetsBundle: WidgetBundle {
     var body: some Widget {
         MQuiz_Widgets()
-        MQuiz_WidgetsLiveActivity()
     }
 }

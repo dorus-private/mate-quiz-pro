@@ -40,6 +40,7 @@
 		EF98CF902B04EC24009E0B5A /* LS.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF98CF8F2B04EC24009E0B5A /* LS.swift */; };
 		EF98CF922B07A9C7009E0B5A /* Einstellungen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF98CF912B07A9C7009E0B5A /* Einstellungen.swift */; };
 		EFB903D32B76B3350054709D /* Verknüpfung.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB903D22B76B3350054709D /* Verknüpfung.swift */; };
+		EFBD348F2BD290A900753841 /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD7C0182B5B095200DB01C0 /* Shortcuts.swift */; };
 		EFBFEA482BADF9E800E1B912 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EFBFEA472BADF9E800E1B912 /* FirebaseAnalytics */; };
 		EFBFEA4A2BADF9E800E1B912 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = EFBFEA492BADF9E800E1B912 /* FirebaseMessaging */; };
 		EFBFEA4D2BAF498000E1B912 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBFEA4C2BAF498000E1B912 /* Triangle.swift */; };
@@ -48,6 +49,14 @@
 		EFC8AF032B331DFB00223384 /* Exchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC8AF022B331DFB00223384 /* Exchange.swift */; };
 		EFD06DB82BBDBD6A00456B17 /* Punkte.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD06DB72BBDBD6A00456B17 /* Punkte.swift */; };
 		EFD239FC2BBFF18E00C396C0 /* Koordinatensystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD239FB2BBFF18E00C396C0 /* Koordinatensystem.swift */; };
+		EFD23A3A2BD1ADE800C396C0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFD23A392BD1ADE800C396C0 /* WidgetKit.framework */; };
+		EFD23A3C2BD1ADE800C396C0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFD23A3B2BD1ADE800C396C0 /* SwiftUI.framework */; };
+		EFD23A3F2BD1ADE800C396C0 /* MQuiz_WidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD23A3E2BD1ADE800C396C0 /* MQuiz_WidgetsBundle.swift */; };
+		EFD23A412BD1ADE800C396C0 /* MQuiz_WidgetsLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD23A402BD1ADE800C396C0 /* MQuiz_WidgetsLiveActivity.swift */; };
+		EFD23A432BD1ADE800C396C0 /* MQuiz_Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD23A422BD1ADE800C396C0 /* MQuiz_Widgets.swift */; };
+		EFD23A452BD1ADE800C396C0 /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD23A442BD1ADE800C396C0 /* AppIntent.swift */; };
+		EFD23A472BD1ADEB00C396C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFD23A462BD1ADEB00C396C0 /* Assets.xcassets */; };
+		EFD23A4B2BD1ADEB00C396C0 /* MQuiz WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EFD23A372BD1ADE800C396C0 /* MQuiz WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EFD7C0192B5B095200DB01C0 /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD7C0182B5B095200DB01C0 /* Shortcuts.swift */; };
 		EFD85BED2B62AF3A00535CBF /* Nachhilfe.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD85BEC2B62AF3A00535CBF /* Nachhilfe.swift */; };
 		EFDD21DF2A69972700585B6A /* EingabeFeld.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDD21DE2A69972700585B6A /* EingabeFeld.swift */; };
@@ -84,7 +93,28 @@
 			remoteGlobalIDString = EF85A5412A611F6400740337;
 			remoteInfo = "Math Quiz Pro";
 		};
+		EFD23A492BD1ADEB00C396C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EF85A53A2A611F6400740337 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EFD23A362BD1ADE800C396C0;
+			remoteInfo = "MQuiz WidgetsExtension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EFD23A4F2BD1ADEB00C396C0 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EFD23A4B2BD1ADEB00C396C0 /* MQuiz WidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		EF0F79982B6F989900A2D427 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
@@ -133,6 +163,16 @@
 		EFC8AF022B331DFB00223384 /* Exchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exchange.swift; sourceTree = "<group>"; };
 		EFD06DB72BBDBD6A00456B17 /* Punkte.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Punkte.swift; sourceTree = "<group>"; };
 		EFD239FB2BBFF18E00C396C0 /* Koordinatensystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Koordinatensystem.swift; sourceTree = "<group>"; };
+		EFD23A372BD1ADE800C396C0 /* MQuiz WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MQuiz WidgetsExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EFD23A392BD1ADE800C396C0 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
+		EFD23A3B2BD1ADE800C396C0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		EFD23A3E2BD1ADE800C396C0 /* MQuiz_WidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQuiz_WidgetsBundle.swift; sourceTree = "<group>"; };
+		EFD23A402BD1ADE800C396C0 /* MQuiz_WidgetsLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQuiz_WidgetsLiveActivity.swift; sourceTree = "<group>"; };
+		EFD23A422BD1ADE800C396C0 /* MQuiz_Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQuiz_Widgets.swift; sourceTree = "<group>"; };
+		EFD23A442BD1ADE800C396C0 /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		EFD23A462BD1ADEB00C396C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EFD23A482BD1ADEB00C396C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EFD23A502BD1AE0F00C396C0 /* MQuiz WidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MQuiz WidgetsExtension.entitlements"; sourceTree = "<group>"; };
 		EFD7C0182B5B095200DB01C0 /* Shortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shortcuts.swift; sourceTree = "<group>"; };
 		EFD85BEC2B62AF3A00535CBF /* Nachhilfe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nachhilfe.swift; sourceTree = "<group>"; };
 		EFDD21DE2A69972700585B6A /* EingabeFeld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EingabeFeld.swift; sourceTree = "<group>"; };
@@ -184,6 +224,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFD23A342BD1ADE800C396C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFD23A3C2BD1ADE800C396C0 /* SwiftUI.framework in Frameworks */,
+				EFD23A3A2BD1ADE800C396C0 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,12 +306,15 @@
 		EF85A5392A611F6400740337 = {
 			isa = PBXGroup;
 			children = (
+				EFD23A502BD1AE0F00C396C0 /* MQuiz WidgetsExtension.entitlements */,
 				EF85A5442A611F6400740337 /* Math Quiz Pro */,
 				EF85A5552A611F6500740337 /* Math Quiz ProTests */,
 				EF85A55F2A611F6500740337 /* Math Quiz ProUITests */,
 				EF8287282A6FD49400E42415 /* Math Quiz Pro IOS */,
 				EF8287392A6FD49500E42415 /* Math Quiz Pro IOSTests */,
 				EF8287432A6FD49500E42415 /* Math Quiz Pro IOSUITests */,
+				EFD23A3D2BD1ADE800C396C0 /* MQuiz Widgets */,
+				EFD23A382BD1ADE800C396C0 /* Frameworks */,
 				EF85A5432A611F6400740337 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -276,6 +328,7 @@
 				EF8287272A6FD49400E42415 /* Math Quiz Pro IOS.app */,
 				EF8287362A6FD49500E42415 /* Math Quiz Pro IOSTests.xctest */,
 				EF8287402A6FD49500E42415 /* Math Quiz Pro IOSUITests.xctest */,
+				EFD23A372BD1ADE800C396C0 /* MQuiz WidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -319,6 +372,28 @@
 			path = "Math Quiz ProUITests";
 			sourceTree = "<group>";
 		};
+		EFD23A382BD1ADE800C396C0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EFD23A392BD1ADE800C396C0 /* WidgetKit.framework */,
+				EFD23A3B2BD1ADE800C396C0 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EFD23A3D2BD1ADE800C396C0 /* MQuiz Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				EFD23A3E2BD1ADE800C396C0 /* MQuiz_WidgetsBundle.swift */,
+				EFD23A402BD1ADE800C396C0 /* MQuiz_WidgetsLiveActivity.swift */,
+				EFD23A422BD1ADE800C396C0 /* MQuiz_Widgets.swift */,
+				EFD23A442BD1ADE800C396C0 /* AppIntent.swift */,
+				EFD23A462BD1ADEB00C396C0 /* Assets.xcassets */,
+				EFD23A482BD1ADEB00C396C0 /* Info.plist */,
+			);
+			path = "MQuiz Widgets";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -329,10 +404,12 @@
 				EF8287232A6FD49400E42415 /* Sources */,
 				EF8287242A6FD49400E42415 /* Frameworks */,
 				EF8287252A6FD49400E42415 /* Resources */,
+				EFD23A4F2BD1ADEB00C396C0 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EFD23A4A2BD1ADEB00C396C0 /* PBXTargetDependency */,
 			);
 			name = "Math Quiz Pro IOS";
 			packageProductDependencies = (
@@ -434,6 +511,23 @@
 			productReference = EF85A55C2A611F6500740337 /* Math Quiz ProUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		EFD23A362BD1ADE800C396C0 /* MQuiz WidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EFD23A4C2BD1ADEB00C396C0 /* Build configuration list for PBXNativeTarget "MQuiz WidgetsExtension" */;
+			buildPhases = (
+				EFD23A332BD1ADE800C396C0 /* Sources */,
+				EFD23A342BD1ADE800C396C0 /* Frameworks */,
+				EFD23A352BD1ADE800C396C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MQuiz WidgetsExtension";
+			productName = "MQuiz WidgetsExtension";
+			productReference = EFD23A372BD1ADE800C396C0 /* MQuiz WidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -441,7 +535,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					EF8287262A6FD49400E42415 = {
@@ -465,6 +559,9 @@
 					EF85A55B2A611F6500740337 = {
 						CreatedOnToolsVersion = 14.3;
 						TestTargetID = EF85A5412A611F6400740337;
+					};
+					EFD23A362BD1ADE800C396C0 = {
+						CreatedOnToolsVersion = 15.3;
 					};
 				};
 			};
@@ -492,6 +589,7 @@
 				EF8287262A6FD49400E42415 /* Math Quiz Pro IOS */,
 				EF8287352A6FD49500E42415 /* Math Quiz Pro IOSTests */,
 				EF82873F2A6FD49500E42415 /* Math Quiz Pro IOSUITests */,
+				EFD23A362BD1ADE800C396C0 /* MQuiz WidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -542,6 +640,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EFD23A352BD1ADE800C396C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFD23A472BD1ADEB00C396C0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -626,6 +732,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EFD23A332BD1ADE800C396C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFD23A432BD1ADE800C396C0 /* MQuiz_Widgets.swift in Sources */,
+				EFD23A452BD1ADE800C396C0 /* AppIntent.swift in Sources */,
+				EFD23A3F2BD1ADE800C396C0 /* MQuiz_WidgetsBundle.swift in Sources */,
+				EFD23A412BD1ADE800C396C0 /* MQuiz_WidgetsLiveActivity.swift in Sources */,
+				EFBD348F2BD290A900753841 /* Shortcuts.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -649,17 +767,23 @@
 			target = EF85A5412A611F6400740337 /* Math Quiz Pro */;
 			targetProxy = EF85A55D2A611F6500740337 /* PBXContainerItemProxy */;
 		};
+		EFD23A4A2BD1ADEB00C396C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EFD23A362BD1ADE800C396C0 /* MQuiz WidgetsExtension */;
+			targetProxy = EFD23A492BD1ADEB00C396C0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		EF8287482A6FD49500E42415 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Math Quiz Pro IOS/Math Quiz Pro IOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -683,7 +807,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -696,11 +820,12 @@
 		EF8287492A6FD49500E42415 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Math Quiz Pro IOS/Math Quiz Pro IOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -724,7 +849,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 7.1.1;
+				MARKETING_VERSION = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1066,6 +1191,75 @@
 			};
 			name = Release;
 		};
+		EFD23A4D2BD1ADEB00C396C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "MQuiz WidgetsExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M342A548C8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MQuiz Widgets/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MQuiz Widgets";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro.MQuizWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EFD23A4E2BD1ADEB00C396C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "MQuiz WidgetsExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M342A548C8;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MQuiz Widgets/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MQuiz Widgets";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro.MQuizWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1128,6 +1322,15 @@
 			buildConfigurations = (
 				EF85A56D2A611F6500740337 /* Debug */,
 				EF85A56E2A611F6500740337 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EFD23A4C2BD1ADEB00C396C0 /* Build configuration list for PBXNativeTarget "MQuiz WidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EFD23A4D2BD1ADEB00C396C0 /* Debug */,
+				EFD23A4E2BD1ADEB00C396C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

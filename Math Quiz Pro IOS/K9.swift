@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVKit
+import WidgetKit
 
 struct InfoAufgaben: View {
     @AppStorage("rolle") var rolle = 1
@@ -350,7 +351,9 @@ struct K9: View {
                         VStack {
                             Spacer()
                                 .onAppear {
-                                    getStudent()
+                                    if selectedClass != "" {
+                                        getStudent()
+                                    }
                                 }
                             if lösung != "kL" {
                                 if lösung == "sss" || lösung == "Ssw" || lösung == "sws" || lösung == "wsw" || task == "x2" || task == "x3" || task == "x4" || task == "2^x" || task == "5*2^x" || task == "4^x" || task == "DEF" || task == "GHI" || task == "JKL" || task == "MNO" || task == "PQR" {
@@ -443,68 +446,70 @@ struct K9: View {
                             }
                             Spacer()
                         }
-                        HStack {
-                            if händer == 1 {
-                                Spacer()
-                                Text(schüler)
-                                    .font(.largeTitle)
-                                    .foregroundStyle(.cyan)
-                            } else {
-                                Spacer()
-                                    .frame(width: 20)
-                            }
-                            VStack {
-                                Button(action: {
-                                    updateStudent(richtig: true, falsch: false, abwesend: false)
-                                }, label: {
-                                    ZStack {
-                                        Circle()
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(.green)
-                                        Image(systemName: "checkmark")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 50, height: 50)
-                                            .foregroundColor(.white)
-                                    }
-                                })
-                                Button(action: {
-                                    updateStudent(richtig: false, falsch: true, abwesend: false)
-                                }, label: {
-                                    ZStack {
-                                        Circle()
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(.red)
-                                        Image(systemName: "xmark")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 50, height: 50)
-                                            .foregroundColor(.white)
-                                    }
-                                })
-                                Button(action: {
-                                    updateStudent(richtig: false, falsch: false, abwesend: true)
-                                }, label: {
-                                    ZStack {
-                                        Circle()
-                                            .frame(width: 100, height: 100)
-                                            .foregroundColor(.gray)
-                                        Image(systemName: "person.fill.xmark")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 60, height: 60)
-                                            .foregroundColor(.white)
-                                    }
-                                })
-                            }
-                            if händer == 1 {
-                                Spacer()
-                                    .frame(width: 20)
-                            } else {
-                                Text(schüler)
-                                    .font(.largeTitle)
-                                    .foregroundStyle(.cyan)
-                                Spacer()
+                        if selectedClass != "" {
+                            HStack {
+                                if händer == 1 {
+                                    Spacer()
+                                    Text(schüler)
+                                        .font(.largeTitle)
+                                        .foregroundStyle(.cyan)
+                                } else {
+                                    Spacer()
+                                        .frame(width: 20)
+                                }
+                                VStack {
+                                    Button(action: {
+                                        updateStudent(richtig: true, falsch: false, abwesend: false)
+                                    }, label: {
+                                        ZStack {
+                                            Circle()
+                                                .frame(width: 100, height: 100)
+                                                .foregroundColor(.green)
+                                            Image(systemName: "checkmark")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 50, height: 50)
+                                                .foregroundColor(.white)
+                                        }
+                                    })
+                                    Button(action: {
+                                        updateStudent(richtig: false, falsch: true, abwesend: false)
+                                    }, label: {
+                                        ZStack {
+                                            Circle()
+                                                .frame(width: 100, height: 100)
+                                                .foregroundColor(.red)
+                                            Image(systemName: "xmark")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 50, height: 50)
+                                                .foregroundColor(.white)
+                                        }
+                                    })
+                                    Button(action: {
+                                        updateStudent(richtig: false, falsch: false, abwesend: true)
+                                    }, label: {
+                                        ZStack {
+                                            Circle()
+                                                .frame(width: 100, height: 100)
+                                                .foregroundColor(.gray)
+                                            Image(systemName: "person.fill.xmark")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 60, height: 60)
+                                                .foregroundColor(.white)
+                                        }
+                                    })
+                                }
+                                if händer == 1 {
+                                    Spacer()
+                                        .frame(width: 20)
+                                } else {
+                                    Text(schüler)
+                                        .font(.largeTitle)
+                                        .foregroundStyle(.cyan)
+                                    Spacer()
+                                }
                             }
                         }
                     }
@@ -550,6 +555,7 @@ struct K9: View {
                                         tasksGenerated += 1
                                         task = aufgaben[tasksGenerated]
                                         punkte += 1
+                                        WidgetCenter.shared.reloadAllTimelines()
                                     } else {
                                         step += 1
                                         task = "Besprechen"

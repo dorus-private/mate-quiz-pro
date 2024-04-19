@@ -276,7 +276,7 @@ struct ContentView: View {
                             Text("Was ist neu?")
                                 .font(.title)
                                 .padding(20)
-                            WasIstNeu7_1()
+                            WasIstNeu8_0()
                             Button(action: {
                                 showNewView = false
                             }, label: {
@@ -1261,6 +1261,94 @@ struct WasIstNeu7_1: View {
     }
 }
 
+struct WasIstNeu8_0: View {
+    var body: some View {
+        Form {
+            Section("") {
+                HStack {
+                    Image(systemName: "ladybug")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.blue)
+                        .frame(width: 50, height: 50)
+                    Spacer()
+                        .frame(width: 10)
+                    VStack {
+                        HStack {
+                            Text("Fehlerbehebungen & Feedback")
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("Wir haben uns Feedback von Lehrern geholt und versucht alles in diesem Update einfließen zu lassen: \n- Schüler können jetzt mit der Taste Enter zur Klassenliste hinzugefügt werden \n- Die Klassen Liste ist alphabetisch nach dem Vornamen sortiert \n- Lange Namen passen problemlos in die Sitze der Sitzordnung rein \n- Korrektur von Rechtschreibfehlern \n- Beim Hausnummern Spiel kann man die Lösung zurücksetzen, falls man falsch gedrückt hatte")
+                                .font(.caption)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                    Spacer()
+                        .frame(width: 10)
+                }
+            }
+            Section("") {
+                HStack {
+                    Image(systemName: "platter.filled.bottom.iphone")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.blue)
+                        .frame(width: 50, height: 50)
+                    Spacer()
+                        .frame(width: 10)
+                    VStack {
+                        HStack {
+                            Text("Widget")
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("Bist du ein Schüler? \nDann behalte deinen Rang viel besser im Blick mit dem neuen \"Status Widget\" für den Home Bildschirm")
+                                .font(.caption)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                    Spacer()
+                        .frame(width: 10)
+                }
+            }
+            Section("") {
+                HStack {
+                    Image(systemName: "textformat.size")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.blue)
+                        .frame(width: 50, height: 50)
+                    Spacer()
+                        .frame(width: 10)
+                    VStack {
+                        HStack {
+                            Text("Textgröße")
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("Die Textgröße für den Externen Bildschirm ist jetzt in den Einstellungen anpassbar")
+                                .font(.caption)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                    Spacer()
+                        .frame(width: 10)
+                }
+            }
+        }
+    }
+}
+
 struct Einführung: View {
     @AppStorage("Einführungsschritt") var step = 0
     @AppStorage("rolle") var rolle = 1
@@ -1276,7 +1364,7 @@ struct Einführung: View {
                     .padding(20)
             }
             if step == 0 || step == 4 {
-                WasIstNeu7()
+                WasIstNeu8_0()
             } else if step == 1 {
                 Text("Bitte wählen Sie eine Rolle aus, für ein angepasstes Design. \nDie Rolle kann später in den Einstellungen umgeändert werden")
                     .multilineTextAlignment(.center)

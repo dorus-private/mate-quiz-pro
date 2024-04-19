@@ -487,6 +487,12 @@ struct TabBarOben: View {
                                     .navigationTitle("7.1")
                             })
                         }
+                        Section("8.0") {
+                            NavigationLink("8.0", destination: {
+                                WasIstNeu8_0()
+                                    .navigationTitle("8.0")
+                            })
+                        }
                     }
                     .navigationTitle("Was ist neu?")
                     Button(action: {
