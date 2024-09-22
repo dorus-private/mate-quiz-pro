@@ -10,6 +10,9 @@
 		EF0F79992B6F989900A2D427 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0F79982B6F989900A2D427 /* Camera.swift */; };
 		EF25170A2B2DDC3000B94B3A /* right.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EF2517092B2DDC3000B94B3A /* right.mp3 */; };
 		EF2B46E12B4AAFBC003B89FC /* EffectsLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = EF2B46E02B4AAFBC003B89FC /* EffectsLibrary */; };
+		EF2FE1F72C8B5BCB004CFA0A /* SelectClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE1F62C8B5BCB004CFA0A /* SelectClass.swift */; };
+		EF2FE1F92C99D5CD004CFA0A /* AufgabenanzahlEinstellen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE1F82C99D5CD004CFA0A /* AufgabenanzahlEinstellen.swift */; };
+		EF2FE1FB2C99D716004CFA0A /* Besprechung.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2FE1FA2C99D716004CFA0A /* Besprechung.swift */; };
 		EF3B627B2A76EA5F005FD1DC /* ZufälligePerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3B627A2A76EA5F005FD1DC /* ZufälligePerson.swift */; };
 		EF3B62B32A7D50E3005FD1DC /* Klasse 8 Modell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3B62B22A7D50E3005FD1DC /* Klasse 8 Modell.swift */; };
 		EF63F7C12B23B75B00FFDE54 /* Lautstärke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF63F7C02B23B75B00FFDE54 /* Lautstärke.swift */; };
@@ -41,6 +44,7 @@
 		EF98CF922B07A9C7009E0B5A /* Einstellungen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF98CF912B07A9C7009E0B5A /* Einstellungen.swift */; };
 		EFB903D32B76B3350054709D /* Verknüpfung.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB903D22B76B3350054709D /* Verknüpfung.swift */; };
 		EFBD348F2BD290A900753841 /* Shortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD7C0182B5B095200DB01C0 /* Shortcuts.swift */; };
+		EFBD34912BD2CB0800753841 /* ShowRankings.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBD34902BD2CB0800753841 /* ShowRankings.swift */; };
 		EFBFEA482BADF9E800E1B912 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EFBFEA472BADF9E800E1B912 /* FirebaseAnalytics */; };
 		EFBFEA4A2BADF9E800E1B912 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = EFBFEA492BADF9E800E1B912 /* FirebaseMessaging */; };
 		EFBFEA4D2BAF498000E1B912 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBFEA4C2BAF498000E1B912 /* Triangle.swift */; };
@@ -119,6 +123,9 @@
 /* Begin PBXFileReference section */
 		EF0F79982B6F989900A2D427 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		EF2517092B2DDC3000B94B3A /* right.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = right.mp3; sourceTree = "<group>"; };
+		EF2FE1F62C8B5BCB004CFA0A /* SelectClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectClass.swift; sourceTree = "<group>"; };
+		EF2FE1F82C99D5CD004CFA0A /* AufgabenanzahlEinstellen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AufgabenanzahlEinstellen.swift; sourceTree = "<group>"; };
+		EF2FE1FA2C99D716004CFA0A /* Besprechung.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Besprechung.swift; sourceTree = "<group>"; };
 		EF3B627A2A76EA5F005FD1DC /* ZufälligePerson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ZufälligePerson.swift"; sourceTree = "<group>"; };
 		EF3B62B22A7D50E3005FD1DC /* Klasse 8 Modell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Klasse 8 Modell.swift"; sourceTree = "<group>"; };
 		EF3C330C2A6B0C07003D027A /* Math-Quiz-Pro-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Math-Quiz-Pro-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -157,6 +164,7 @@
 		EF98CF8F2B04EC24009E0B5A /* LS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LS.swift; sourceTree = "<group>"; };
 		EF98CF912B07A9C7009E0B5A /* Einstellungen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Einstellungen.swift; sourceTree = "<group>"; };
 		EFB903D22B76B3350054709D /* Verknüpfung.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Verknüpfung.swift"; sourceTree = "<group>"; };
+		EFBD34902BD2CB0800753841 /* ShowRankings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowRankings.swift; sourceTree = "<group>"; };
 		EFBFEA4B2BAE15F200E1B912 /* Math Quiz Pro IOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Math Quiz Pro IOS.entitlements"; sourceTree = "<group>"; };
 		EFBFEA4C2BAF498000E1B912 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		EFC8AF002B2E413D00223384 /* Sitzordnung.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sitzordnung.swift; sourceTree = "<group>"; };
@@ -272,6 +280,10 @@
 				EFE31A622B88D9290072CA79 /* Kopfrechnen.swift */,
 				EFD06DB72BBDBD6A00456B17 /* Punkte.swift */,
 				EFD239FB2BBFF18E00C396C0 /* Koordinatensystem.swift */,
+				EFBD34902BD2CB0800753841 /* ShowRankings.swift */,
+				EF2FE1F62C8B5BCB004CFA0A /* SelectClass.swift */,
+				EF2FE1F82C99D5CD004CFA0A /* AufgabenanzahlEinstellen.swift */,
+				EF2FE1FA2C99D716004CFA0A /* Besprechung.swift */,
 				EF82872D2A6FD49500E42415 /* Assets.xcassets */,
 				EF82872F2A6FD49500E42415 /* Preview Content */,
 			);
@@ -667,11 +679,15 @@
 				EF79BB312B25D92B0002409C /* Schule.swift in Sources */,
 				EFF58B292BBB1D3400EC746F /* Hausnummern.swift in Sources */,
 				EF8287542A6FF60300E42415 /* KeyPad.swift in Sources */,
+				EF2FE1F92C99D5CD004CFA0A /* AufgabenanzahlEinstellen.swift in Sources */,
 				EF82872A2A6FD49400E42415 /* Math_Quiz_Pro_IOSApp.swift in Sources */,
 				EF8287562A70053B00E42415 /* ExternalView.swift in Sources */,
+				EF2FE1FB2C99D716004CFA0A /* Besprechung.swift in Sources */,
 				EFB903D32B76B3350054709D /* Verknüpfung.swift in Sources */,
+				EFBD34912BD2CB0800753841 /* ShowRankings.swift in Sources */,
 				EF8287522A6FF57900E42415 /* K8.swift in Sources */,
 				EF79BB352B2762640002409C /* Mitternachtsformel.swift in Sources */,
+				EF2FE1F72C8B5BCB004CFA0A /* SelectClass.swift in Sources */,
 				EF3B62B32A7D50E3005FD1DC /* Klasse 8 Modell.swift in Sources */,
 				EF98CF8E2AFE78E4009E0B5A /* K9.swift in Sources */,
 				EFD85BED2B62AF3A00535CBF /* Nachhilfe.swift in Sources */,
@@ -783,7 +799,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Math Quiz Pro IOS/Math Quiz Pro IOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -807,7 +823,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0;
+				MARKETING_VERSION = 8.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -825,7 +841,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Math Quiz Pro IOS/Math Quiz Pro IOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"Math Quiz Pro IOS/Preview Content\"";
 				DEVELOPMENT_TEAM = M342A548C8;
 				ENABLE_PREVIEWS = YES;
@@ -849,7 +865,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0;
+				MARKETING_VERSION = 8.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.leon.mathquizpro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

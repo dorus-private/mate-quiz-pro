@@ -29,10 +29,7 @@ struct K8: View {
     @State var showError1Alert = false
     @State private var selectedClass = ""
     @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
-    @State var schüler = ""
-    @State var student = Student(name: "Test", richtig: "0", falsch: "0", abwesend: "", klasse: "k", datum: "")
     @AppStorage("rolle") var rolle = 1
-    @AppStorage("falscheantwort!Überspringen") var falscheantwortÜberspringen = true
     @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
     
     var body: some View {
@@ -60,88 +57,9 @@ struct K8: View {
             
             VStack {
                 if step == 1 {
-                    Text("Aufgaben Anzahl einstellen")
-                        .font(.title)
-                        .padding(20)
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                if gesammtAufgaben != 5 {
-                                    gesammtAufgaben -= 1
-                                }
-                            }
-                        }, label: {
-                            ZStack {
-                                Circle()
-                                    .frame(width: 50, height: 50)
-                                    .foregroundColor(gesammtAufgaben == 5 ? .gray : .red)
-                                RoundedRectangle(cornerRadius: 5)
-                                    .frame(width: 35, height: 7.5)
-                                    .foregroundColor(.white)
-                            }
-                        })
-                        if #available(iOS 16.0, *) {
-                            Text("\(gesammtAufgaben)")
-                                .font(.title2)
-                                .padding(15)
-                                .contentTransition(.numericText())
-                        } else {
-                            Text("\(gesammtAufgaben)")
-                                .font(.title2)
-                                .padding(15)
-                        }
-                        Button(action: {
-                            withAnimation {
-                                gesammtAufgaben += 1
-                            }
-                        }, label: {
-                            ZStack {
-                                Circle()
-                                    .frame(width: 50, height: 50)
-                                    .foregroundColor(.green)
-                                RoundedRectangle(cornerRadius: 5)
-                                    .frame(width: 35, height: 7.5)
-                                    .foregroundColor(.white)
-                                RoundedRectangle(cornerRadius: 5)
-                                    .frame(width: 7.5, height: 35)
-                                    .foregroundColor(.white)
-                            }
-                        })
-                        Spacer()
-                    }
-                    Spacer()
+                    AufgabenanzahlEinstellen(gesammtAufgaben: $gesammtAufgaben)
                 } else if step == 2 {
-                    Text("Bitte wählen Sie eine Klasse aus, aus der zufällige Schüler in der Besprechungsrunde erscheinen werden")
-                        .multilineTextAlignment(.center)
-                        .padding(20)
-                    HStack {
-                        Spacer()
-                            .frame(width: 20)
-                        List(klassenListe, id: \.self) { klasse in
-                            HStack {
-                                Text(klasse)
-                                Spacer()
-                                Button(action: {
-                                    selectedClass = klasse
-                                }, label: {
-                                    if selectedClass != klasse {
-                                        Image(systemName: "circle")
-                                            .foregroundColor(.gray)
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
-                                            .frame(width: 20, height: 20)
-                                    }
-                                })
-                            }
-                        }
-                        .cornerRadius(15)
-                        Spacer()
-                            .frame(width: 20)
-                    }
+                    SelectClass(selectedClass: $selectedClass)
                 } else if step == 3 {
                     Spacer()
                     CounterView(bigText: false)
@@ -171,101 +89,9 @@ struct K8: View {
                             }
                     }
                 } else if step == 5 {
-                    Spacer()
-                    if rolle == 1 {
-                        Image(systemName: "person.3.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(.accentColor)
-                            .padding(20)
-                        Text("Besprechen Sie im nächsten Schritt die Aufgaben mit der gesammten Klasse")
-                            .font(.largeTitle)
-                            .padding(20)
-                            .multilineTextAlignment(.center)
-                        HStack {
-                            Spacer()
-                                .frame(width: 20)
-                            Text("Die Schüler können die Lösungen der Aufgaben auf dem externen Bildschirm nicht sehen")
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                                .frame(width: 20)
-                        }
-                    } else {
-                        Text("Kontrolliere deine Lösung")
-                    }
+                    BesprechungWarnung()
                 } else if step == 6 {
-                    Spacer()
-                    if lösung != "kL" {
-                        AttributedTextView(attributedString: TextBindingManager(string: "\(task)", hoch: 20).attributedString, fontSize: 25)
-                            .frame(height: 75)
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                        AttributedTextView(attributedString: TextBindingManager(string: "\(lösung)", hoch: 20).attributedString, fontSize: 50)
-                            .frame(height: 100)
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                    } else {
-                        Text("Diese Aufgabe hat keine Lösung eingespeichert")
-                            .font(.title)
-                            .multilineTextAlignment(.center)
-                        AttributedTextView(attributedString: TextBindingManager(string: "\(task)", hoch: 20).attributedString, fontSize: 50)
-                            .frame(height: 100)
-                    }
-                    if selectedClass != "" {
-                        Spacer()
-                            .onAppear {
-                                getStudent()
-                            }
-                        Text(schüler)
-                            .font(.title)
-                            .foregroundColor(rolle == 1 ? .white : .black)
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                updateStudent(richtig: true, falsch: false, abwesend: false)
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.green)
-                                    Image(systemName: "checkmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            Button(action: {
-                                updateStudent(richtig: false, falsch: true, abwesend: false)
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.red)
-                                    Image(systemName: "xmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            Button(action: {
-                                updateStudent(richtig: false, falsch: false, abwesend: true)
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "person.fill.xmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            Spacer()
-                                .frame(width: 20)
-                        }
-                        Spacer()
-                    }
+                    BesprechungAufgaben(lösung: $lösung, selectedClass: $selectedClass, step: $step, gesammtAufgaben: $gesammtAufgaben, aufgaben: $aufgaben, lösungen: $lösungen, tasksGenerated: $tasksGenerated)
                 }
                 
                 Spacer()
@@ -360,55 +186,6 @@ struct K8: View {
         }
         .navigationBarBackButtonHidden(true)
     }
-    func getStudent() {
-        let randomStudent = Database().students.randomElement()
-        if randomStudent?.klasse == selectedClass {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd.MM.yyyy"
-            if randomStudent?.datum != dateFormatter.string(from: Date()) || randomStudent?.abwesend == "0" {
-                schüler = randomStudent?.name ?? ""
-                student = randomStudent!
-            } else {
-                if student.richtig == "0" && student.falsch == "0" && student.abwesend == "0" {
-                    schüler = randomStudent?.name ?? ""
-                    student = randomStudent!
-                }
-                getStudent()
-            }
-        } else {
-            getStudent()
-        }
-    }
-    
-    func updateStudent(richtig: Bool, falsch: Bool, abwesend: Bool) {
-        let sR = (Int(student.richtig) ?? 0)
-        let sF = (Int(student.falsch) ?? 0)
-        let sA = (Int(student.abwesend) ?? 0)
-        if richtig {
-            Database().updateStatus(for: student, richtig: "\(sR + 1)", falsch: "\(sF)", abwesend: "\(sA)")
-        }
-        if falsch {
-            Database().updateStatus(for: student, richtig: "\(sR)", falsch: "\(sF + 1)", abwesend: "\(sA)")
-            if falscheantwortÜberspringen {
-                falscheAntwortSchülerBekommen()
-            }
-        }
-        if abwesend {
-            Database().updateStatus(for: student, richtig: "\(sR)", falsch: "\(sF)", abwesend: "\(sA + 1)")
-            if falscheantwortÜberspringen {
-                falscheAntwortSchülerBekommen()
-            }
-        }
-        letzterSchritt()
-    }
-    
-    func falscheAntwortSchülerBekommen() {
-        let name = student.name
-        getStudent()
-        if student.name == name {
-            falscheAntwortSchülerBekommen()
-        }
-    }
     
     func letzterSchritt() {
         if tasksGenerated != gesammtAufgaben - 2 {
@@ -423,9 +200,6 @@ struct K8: View {
                 step = 0
                 tasksGenerated = 0
             }
-        }
-        if selectedClass != "" {
-            getStudent()
         }
     }
     

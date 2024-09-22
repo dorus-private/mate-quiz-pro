@@ -492,6 +492,9 @@ struct TabBarOben: View {
                                 WasIstNeu8_0()
                                     .navigationTitle("8.0")
                             })
+                            NavigationLink("8.1") {
+                                WasIstNeuView(title: "8.1", text: "Die Funktion Kopfrechnen unterstützt das Anzeigen der Schüler in zufälliger Reihenfolge: \nHierbei bekommt der Lehrer immer 2 Schüler auf seinem Bildschirm angezeigt und eine Aufgabe, die diese lösen müssen. Sobald einer der beiden Schüler die Aufgabe richtig löst, klickt der Lehrer den richtigen Schüler an, welcher dann eine Runde weiter ist. Der andere fliegt dann aus dem Spiel und kann erst im nächsten Spiel wieder mitmachen. Dies geht dann so lange weiter, bis dann am Ende nur noch 2 Schüler aus der Klasse im Spiel sind.")
+                            }
                         }
                     }
                     .navigationTitle("Was ist neu?")

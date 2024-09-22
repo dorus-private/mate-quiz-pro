@@ -80,6 +80,8 @@ struct ScreensApp: App {
     @AppStorage("presentAppStoreView") var presentAppStoreView = false
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     @AppStorage("rolle") var rolle = 1
+    @AppStorage("updateClassNumber") var updateClassNumber = true
+    @ObservedObject var database = Database()
     
     private var screenDidConnectPublisher: AnyPublisher<UIScreen, Never> {
         NotificationCenter.default
@@ -111,6 +113,10 @@ struct ScreensApp: App {
                 }
                 .onAppear {
                     UIApplication.shared.applicationIconBadgeNumber = 0 
+                    if updateClassNumber {
+                        database.updateStudentClasses()
+                        updateClassNumber = false
+                    }
                 }
                 .sheet(isPresented: $presentAppStoreView) {
                     VStack {

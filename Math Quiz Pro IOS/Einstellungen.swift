@@ -8,116 +8,8 @@
 import SwiftUI
 import LocalAuthentication
 
-class StudentStatus: Identifiable, Codable {
-    var id = UUID()
-    var status: String
-    var datum: String
-    var fach: String
-    
-    init(status: String, datum: String, fach: String) {
-        self.status = status
-        self.datum = datum
-        self.fach = fach
-    }
-}
-
-class Student2: Identifiable, Codable {
-    var id = UUID()
-    var name: String
-    var klasse: String
-    var status: [StudentStatus]
-    var richtig = 0
-    var falsch = 0
-    var abwesend = 0
-    
-    init(name: String, klasse: String, status: [StudentStatus]) {
-        self.name = name
-        self.klasse = klasse
-        self.status = status
-        /*
-        for stat in status {
-            switch stat.status {
-                case "r":
-                    richtig += 1
-                case "f":
-                    falsch += 1
-                case "a":
-                    abwesend += 1
-                default:
-                    break
-            }
-        }
-         */
-    }
-}
-
-// Datenbankklasse
-class Database2: ObservableObject {
-    @Published var students: [Student2]
-    
-    init() {
-        // Laden der gespeicherten Daten aus UserDefaults
-        if let data = UserDefaults.standard.data(forKey: "students2"),
-           let decodedStudents = try?JSONDecoder().decode([Student2].self, from: data) {
-            self.students = decodedStudents
-        } else {
-            self.students = []
-        }
-    }
-    
-    func addStudent(student: Student) {
-        students.append(Student2(name: student.name, klasse: student.klasse, status: [StudentStatus(status: "?", datum: datum(), fach: "Mathe")]))
-        saveData()
-    }
-    
-    func updateStatus(name: String, status: String) {
-        var student2 = Student2(name: "", klasse: "", status: [StudentStatus(status: "", datum: "", fach: "")])
-        for student in students {
-            if student.name == name {
-                student2 = student
-                break
-            }
-        }
-        if let index = students.firstIndex(where: { $0.id == student2.id }) {
-            students[index].status.append(StudentStatus(status: status, datum: datum(), fach: "Mathe"))
-            saveData()
-        } else {
-            print("cannot be updated")
-        }
-    }
-    
-    func getRandomStudentFromClass(className: String) -> Student2? {
-        let filteredStudents = students.filter {$0.name.lowercased().contains(className.lowercased()) }
-        return filteredStudents.randomElement()
-    }
-    
-    func saveData() {
-        // Speichern der Daten in UserDefaults
-        if let encodedData = try? JSONEncoder().encode(students) {
-            UserDefaults.standard.set(encodedData, forKey: "students2")
-        }
-    }
-    
-    func doesStudentExist(withName name: String) -> Bool {
-        return students.contains { $0.name.lowercased() == name.lowercased() }
-    }
-    
-    func moveStudents() {
-        for student in Database().students {
-            students.append(Student2(name: student.name, klasse: student.klasse, status: [StudentStatus(status: "richtig: \(student.richtig) \nfalsch: \(student.falsch) \nabwesend: \(student.abwesend)", datum: student.datum, fach: "Mathe")]))
-        }
-        saveData()
-    }
-    
-    func datum() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        return dateFormatter.string(from: Date())
-    }
-}
-
 // Schülerklasse
-class Student: Identifiable, Codable {
+class Student: Identifiable, Codable, Hashable {
     var id = UUID()
     var name: String
     var richtig: String
@@ -134,6 +26,16 @@ class Student: Identifiable, Codable {
         self.klasse = klasse
         self.datum = datum
     }
+    
+    // Conform to the Equatable protocol
+        static func == (lhs: Student, rhs: Student) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
+        // Conform to the Hashable protocol
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
 }
 
 // Datenbankklasse
@@ -168,13 +70,30 @@ class Database: ObservableObject {
                     students[index].falsch = falsch
                     students[index].richtig = richtig
                     students[index].abwesend = abwesend
-                    print("update")
                     saveData()
                 }
             }
         } else {
             print("cannot be updated")
         }
+    }
+    
+    func updateStudentClasses() {
+        Exit = true
+        let klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
+        var updatetKlassenListe: [String] = []
+        for klasse in klassenListe {
+            updatetKlassenListe.append(returnNewClass(actuallyClass: klasse))
+        }
+        UserDefaults.standard.set(updatetKlassenListe, forKey: "Klassen")
+        var updatedStudents: [Student] = []
+        for student in students {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM.yyyy"
+            updatedStudents.append(Student(name: student.name, richtig: student.richtig, falsch: student.falsch, abwesend: student.abwesend, klasse: returnNewClass(actuallyClass: student.klasse), datum: dateFormatter.string(from: Date())))
+        }
+        students = updatedStudents
+        saveData()
     }
     
     func getRandomStudentFromClass(className: String) -> Student? {
@@ -187,11 +106,34 @@ class Database: ObservableObject {
         self.students = students.sorted {$0.name < $1.name}
         if let encodedData = try? JSONEncoder().encode(students) {
             UserDefaults.standard.set(encodedData, forKey: "students")
+            print("update")
         }
     }
     
     func doesStudentExist(withName name: String) -> Bool {
         return students.contains { $0.name.lowercased() == name.lowercased() }
+    }
+    
+    func returnNewClass(actuallyClass: String) -> String {
+        let regex = try! NSRegularExpression(pattern: "\\d+")
+        let range = NSRange(actuallyClass.startIndex..<actuallyClass.endIndex, in: actuallyClass)
+        var newString = actuallyClass
+        
+        // Find all matches of numbers
+        let matches = regex.matches(in: actuallyClass, range: range)
+        
+        // Iterate over the matches in reverse to replace numbers
+        for match in matches.reversed() {
+            if let range = Range(match.range, in: actuallyClass) {
+                if let number = Int(actuallyClass[range]) {
+                    let incrementedNumber = number + 1
+                    newString.replaceSubrange(range, with: String(incrementedNumber))
+                }
+            }
+        }
+        
+        // Update the state
+        return newString
     }
 }
 
@@ -331,72 +273,87 @@ struct Schülereinstellungen: View {
     @FocusState var textFieldFocused: Bool
     
     var body: some View {
-        Form {
-            NavigationLink("Schülerstatus") {
-                VStack {
-                    if isUnlocked == true || checkAuthenticateAvability() == false {
-                        p1
-                    } else {
-                        Text("Authentifizieren")
-                            .font(.title)
-                        Spacer()
-                        Text("Entsperren Sie den Abschnitt \"Schüler\", umd die Daten Ihrer Schüler einzusehen")
-                            .multilineTextAlignment(.center)
-                            .padding(20)
-                        Image(systemName: "lock.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                            .foregroundColor(.blue)
-                        Button(action: {
-                            authenticate()
-                        }, label: {
-                            HStack {
+        VStack {
+            Text("Diese Funktion dient in erster Linie nur zur Orientierung")
+                .foregroundStyle(.white)
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+                .padding(.bottom, 12.5)
+                .multilineTextAlignment(.center)
+            NavigationView {
+                Form {
+                    NavigationLink("Schülerstatus") {
+                        VStack {
+                            if isUnlocked == true || checkAuthenticateAvability() == false {
+                                p1
+                            } else {
+                                Text("Authentifizieren")
+                                    .font(.title)
                                 Spacer()
-                                    .frame(width: 20)
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .frame(height: 50)
-                                    Text("Entsperren")
-                                        .foregroundColor(.white)
+                                Text("Entsperren Sie den Abschnitt \"Schüler\", umd die Daten Ihrer Schüler einzusehen")
+                                    .multilineTextAlignment(.center)
+                                    .padding(20)
+                                Image(systemName: "lock.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.blue)
+                                Button(action: {
+                                    authenticate()
+                                }, label: {
+                                    HStack {
+                                        Spacer()
+                                            .frame(width: 20)
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 15)
+                                                .frame(height: 50)
+                                            Text("Entsperren")
+                                                .foregroundColor(.white)
+                                        }
+                                        Spacer()
+                                            .frame(width: 20)
+                                    }
+                                })
+                                .onAppear {
+                                    authenticate()
                                 }
+                                .padding(20)
                                 Spacer()
-                                    .frame(width: 20)
+                            }
+                        }
+                        .onChange(of: scenePhase) { newPhase in
+                            if newPhase == .inactive {
+                                isUnlocked = false
+                            }
+                        }
+                    }
+                    Section("") {
+                        NavigationLink(destination: {
+                            Sitzordnung()
+                        }, label: {
+                            if UIDevice.current.userInterfaceIdiom == .pad  {
+                                Text("Sitzordnung")
+                            } else {
+                                Text("Die Sitzordnung ist nur für das iPad verfügbar")
                             }
                         })
-                        .onAppear {
-                            authenticate()
-                        }
-                        .padding(20)
-                        Spacer()
+                        .disabled(UIDevice.current.userInterfaceIdiom == .phone)
                     }
                 }
-                .onChange(of: scenePhase) { newPhase in
-                    if newPhase == .inactive {
-                        isUnlocked = false
-                    }
+                .navigationTitle("Schüler")
+                .onAppear {
+                    // Load items from UserDefaults when the view appears
+                    klassenListe = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
+                }
+                .onAppear {
+                    task = ""
                 }
             }
-            Section("") {
-                NavigationLink(destination: {
-                    Sitzordnung()
-                }, label: {
-                    if UIDevice.current.userInterfaceIdiom == .pad  {
-                        Text("Sitzordnung")
-                    } else {
-                        Text("Die Sitzordnung ist nur für das iPad verfügbar")
-                    }
-                })
-                .disabled(UIDevice.current.userInterfaceIdiom == .phone)
-            }
-        }
-        .navigationTitle("Schüler")
-        .onAppear {
-            // Load items from UserDefaults when the view appears
-            klassenListe = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
-        }
-        .onAppear {
-            task = ""
+            .navigationViewStyle(.stack)
+            .cornerRadius(15)
+            .shadow(color: .white, radius: 5)
+            .padding(.horizontal, 25)
+            .padding(.bottom, 12.5)
         }
     }
     

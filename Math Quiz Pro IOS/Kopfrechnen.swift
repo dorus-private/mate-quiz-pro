@@ -8,28 +8,32 @@
 import SwiftUI
 
 struct Kopfrechnen: View {
+    // mathematical tasks
     @State var multiplikation = false
     @State var division = false
     @State var addition = false
     @State var subtraktion = false
     @State var automatisch = false
+    
+    //system setup
     @State var showAutomatischInfo = false
     @Environment(\.dismiss) var dismiss
     @State var step = 0
     @AppStorage("task") private var task = ""
     @State var lösung = ""
-    @State private var selectedClass = ""
-    @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
     @AppStorage("rolle") var rolle = 1
-    
-    @State var showedStudent1: Student = Student(name: "", richtig: "", falsch: "", abwesend: "", klasse: "", datum: "")
-    @State var showedStudent2: Student = Student(name: "", richtig: "", falsch: "", abwesend: "", klasse: "", datum: "")
-    @State var showedStudent3: Student = Student(name: "", richtig: "", falsch: "", abwesend: "", klasse: "", datum: "")
-    
-    @State var students: [Student] = []
-    @State var studentsWeiter: [Student] = []
-    
     @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
+    
+    // Student class
+    @State private var selectedClass = ""
+    @ObservedObject var database = Database()
+    @State private var studentsInClass9b: [Student] = []
+    @State private var currentPair: [Student] = []
+    @State private var nextRound: [Student] = []
+    @State private var showWinner = false
+    @State private var winner: Student?
+    @State private var showNewRoundAlert = false
+    @State private var isFirstRound = true
     
     var body: some View {
         ZStack {
@@ -59,171 +63,68 @@ struct Kopfrechnen: View {
             VStack {
                 if step == 2 {
                     Spacer()
-                    Text(task)
-                        .font(.title)
-                        .padding(20)
-                    Text(lösung)
-                        .font(.title2)
-                    if selectedClass != "" {
-                        Spacer()
-                            .frame(height: 50)
-                        HStack {
-                            Text(showedStudent1.name)
-                                .font(.title)
-                                .padding(10)
-                            Button(action: {
-                                updateStudent(student: showedStudent1, richtig: true, falsch: false, abwesend: false)
-                                updateStudent(student: showedStudent2, richtig: false, falsch: true, abwesend: false)
-                                updateStudent(student: showedStudent3, richtig: false, falsch: true, abwesend: false)
-                                generateTask()
-                                showStudent()
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.green)
-                                    Image(systemName: "checkmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            Button(action: {
-                                updateStudent(student: showedStudent1, richtig: false, falsch: false, abwesend: true)
-                                showedStudent1 = getStudent()
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "person.fill.xmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                        }
-                        Text("gegen")
+                    if showWinner && selectedClass != "", let winner = winner {
+                        Text("Der Sieger ist \(winner.name)")
+                            .font(.largeTitle)
+                            .padding()
+                    } else if showNewRoundAlert && selectedClass != "" {
+                        Text(isFirstRound ? "Spiel starten" : "Neue Runde starten!")
                             .font(.title2)
-                        HStack {
-                            Text(showedStudent2.name)
+                            .padding()
+                        
+                        Button(action: {
+                            showNewRoundAlert = false
+                            startNextRound()
+                            isFirstRound = false
+                        }) {
+                            Text(isFirstRound ? "Start" : "Runde starten")
                                 .font(.title)
-                                .padding(10)
-                            Button(action: {
-                                updateStudent(student: showedStudent2, richtig: true, falsch: false, abwesend: false)
-                                updateStudent(student: showedStudent1, richtig: false, falsch: true, abwesend: false)
-                                updateStudent(student: showedStudent3, richtig: false, falsch: true, abwesend: false)
-                                generateTask()
-                                showStudent()
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.green)
-                                    Image(systemName: "checkmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20, height: 20)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            Button(action: {
-                                updateStudent(student: showedStudent2, richtig: false, falsch: false, abwesend: true)
-                                showedStudent2 = getStudent()
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "person.fill.xmark")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundColor(.white)
-                                }
-                            })
-                            if showedStudent3.name != "" {
-                                Text("gegen")
-                                    .font(.title2)
-                                HStack {
-                                    Text(showedStudent3.name)
-                                        .font(.title)
-                                        .padding(10)
+                                .padding()
+                                .background(Color.orange)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                    } else {
+                        Text(task)
+                            .font(.title)
+                            .padding(20)
+                        Text(lösung)
+                            .font(.title2)
+                    }
+                    if selectedClass != ""  && showNewRoundAlert == false && showWinner == false {
+                        if currentPair.count == 2 || currentPair.count == 3 {
+                            Text("Drücken Sie auf den Schüler, der die Aufgabe richtig beantwortet hat")
+                                .font(.title2)
+                                .padding()
+                            HStack {
+                                ForEach(currentPair, id: \.id) { student in
                                     Button(action: {
-                                        updateStudent(student: showedStudent3, richtig: true, falsch: false, abwesend: false)
-                                        updateStudent(student: showedStudent1, richtig: false, falsch: true, abwesend: false)
-                                        updateStudent(student: showedStudent2, richtig: false, falsch: true, abwesend: false)
+                                        for cs in currentPair {
+                                            if cs == student {
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                                    updateStudent(student: student, richtig: true, falsch: false, abwesend: false)
+                                                }
+                                            } else {
+                                                updateStudent(student: student, richtig: false, falsch: true, abwesend: false)
+                                            }
+                                        }
+                                        advanceStudent(student)
                                         generateTask()
-                                        showStudent()
-                                    }, label: {
-                                        ZStack {
-                                            Circle()
-                                                .frame(width: 40, height: 40)
-                                                .foregroundColor(.green)
-                                            Image(systemName: "checkmark")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(.white)
-                                        }
-                                    })
-                                    Button(action: {
-                                        updateStudent(student: showedStudent3, richtig: false, falsch: false, abwesend: true)
-                                        showedStudent3 = Student(name: "", richtig: "", falsch: "", abwesend: "", klasse: "", datum: "")
-                                    }, label: {
-                                        ZStack {
-                                            Circle()
-                                                .frame(width: 40, height: 40)
-                                                .foregroundColor(.gray)
-                                            Image(systemName: "person.fill.xmark")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 25, height: 25)
-                                                .foregroundColor(.white)
-                                        }
-                                    })
+                                    }) {
+                                        Text(student.name)
+                                            .font(.title)
+                                            .padding()
+                                            .background(Color.blue.opacity(0.7))
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                    }
+                                    .padding()
                                 }
                             }
                         }
                     }
                 } else if step == 1 {
-                    Text("Bitte wählen Sie eine Klasse aus, aus der zufällige Schüler in der Besprechungsrunde erscheinen werden")
-                        .multilineTextAlignment(.center)
-                        .padding(20)
-                    HStack {
-                        Spacer()
-                            .frame(width: 20)
-                        List(klassenListe, id: \.self) { klasse in
-                            HStack {
-                                Text(klasse)
-                                Spacer()
-                                Button(action: {
-                                    withAnimation {
-                                        if selectedClass == klasse {
-                                            selectedClass = ""
-                                        } else {
-                                            selectedClass = klasse
-                                        }
-                                    }
-                                }, label: {
-                                    if selectedClass != klasse {
-                                        Image(systemName: "circle")
-                                            .foregroundColor(.gray)
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
-                                            .frame(width: 20, height: 20)
-                                    }
-                                })
-                            }
-                        }
-                        .cornerRadius(15)
-                        Spacer()
-                            .frame(width: 20)
-                    }
+                    SelectClass(selectedClass: $selectedClass)
                 }
                 Spacer()
                 HStack {
@@ -250,20 +151,19 @@ struct Kopfrechnen: View {
                             }
                         }
                     })
-                    if step != 2 || selectedClass == "" {
+                    if step != 2 || selectedClass == "" || showWinner {
                         Button(action: {
                             withAnimation {
                                 if step == 0 {
                                     if multiplikation == true || division == true || addition == true || subtraktion == true || automatisch == true {
-                                        step += 2 // wenn Klasse dazu kommt, dann auf 1 setzen
+                                        step += 1
                                     }
-                                } /*else if step == 1 {
+                                } else if step == 1 {
                                     step += 1
-                                    initialiseStudnts()
-                                    showedStudent1 = getStudent()
-                                    showedStudent2 = getStudent()
-                                    print(students)
-                                }*/
+                                    initializeGame()
+                                } else if step == 2 && showWinner {
+                                    initializeGame()
+                                }
                                 generateTask()
                             }
                         }, label: {
@@ -273,6 +173,9 @@ struct Kopfrechnen: View {
                                     .foregroundColor(multiplikation == true || division == true || addition == true || subtraktion == true || automatisch == true ? .blue : .gray)
                                 if step == 1 {
                                     Text(selectedClass == "" ? "Keine Klasse wählen" : "Weiter")
+                                        .foregroundStyle(.white)
+                                } else if step == 2 && showWinner {
+                                    Text("Neues Spiel starten")
                                         .foregroundStyle(.white)
                                 } else {
                                     Text(step == 0 ? "Weiter" : "Nächste Aufgabe")
@@ -292,6 +195,7 @@ struct Kopfrechnen: View {
         .navigationTitle("Kopfrechnen")
     }
     
+    // Tasks logic
     func generateTask() {
         let randomInt = Int.random(in: 1...4)
         if randomInt == 1 {
@@ -354,42 +258,60 @@ struct Kopfrechnen: View {
             generateTask()
         }
     }
-    
-    func initialiseStudnts() {
-        students = []
-        studentsWeiter = []
-        for s in Database().students {
-            if s.klasse == selectedClass {
-                students.append(s)
-            }
-        }
+   
+    // Students logic
+    func initializeGame() {
+        // Filtere Schüler der Klasse 9b und speichere sie in einer temporären Liste
+        studentsInClass9b = []
+        currentPair = []
+        nextRound = []
+        showWinner = false
+        winner = nil
+        showNewRoundAlert = false
+        isFirstRound = true
+        studentsInClass9b = database.students.filter { $0.klasse == selectedClass }
+        studentsInClass9b.shuffle()
+        showNewRoundAlert = true
     }
     
-    func getStudent() -> Student {
-        if !students.isEmpty {
-            let randomStudent = students.randomElement()!
-            if let index = students.firstIndex(where: { $0.id == randomStudent.id }) {
-                students.remove(at: index)
-            }
-            return randomStudent
+    func advanceStudent(_ student: Student) {
+        // Füge den ausgewählten Schüler zur nächsten Runde hinzu
+        nextRound.append(student)
+        
+        // Überprüfe, ob noch Schüler übrig sind, die gegeneinander antreten müssen
+        if !studentsInClass9b.isEmpty {
+            startNextRound()
         } else {
-            if !students.isEmpty {
-                let randomStudent = studentsWeiter.randomElement()!
-                if let index = studentsWeiter.firstIndex(where: { $0.id == randomStudent.id }) {
-                    studentsWeiter.remove(at: index)
-                }
-                return randomStudent
+            // Überprüfe, ob wir den Sieger haben oder ob wir eine neue Runde starten müssen
+            if nextRound.count == 1 {
+                winner = nextRound.first
+                showWinner = true
+            } else if nextRound.count == 3 {
+                // Drei Schüler sind übrig, zeige alle drei an
+                currentPair = nextRound
+                nextRound.removeAll()
             } else {
-                return Student(name: "", richtig: "", falsch: "", abwesend: "", klasse: "", datum: "")
+                // Setze für die nächste Runde die Schüler zurück
+                studentsInClass9b = nextRound
+                nextRound.removeAll()
+                showNewRoundAlert = true
             }
         }
     }
     
-    func showStudent() {
-        showedStudent1 = getStudent()
-        showedStudent2 = getStudent()
-        if students.count == 3 {
-            showedStudent3 = getStudent()
+    func startNextRound() {
+        // Zeige das nächste Schülerpaar an oder alle drei Schüler, wenn nur noch drei übrig sind
+        if studentsInClass9b.count == 3 {
+            // Füge den letzten übrig gebliebenen Schüler hinzu
+            currentPair = studentsInClass9b
+            studentsInClass9b = []
+        } else if studentsInClass9b.count >= 2 {
+            currentPair = Array(studentsInClass9b.prefix(2))
+            studentsInClass9b = Array(studentsInClass9b.dropFirst(2))
+        } else if studentsInClass9b.count == 0 && nextRound.count == 3 {
+            // Wenn genau drei Schüler übrig sind, zeige alle drei an
+            currentPair = nextRound
+            nextRound.removeAll()
         }
     }
     
@@ -399,16 +321,6 @@ struct Kopfrechnen: View {
         let sA = (Int(student.abwesend) ?? 0)
         if richtig {
             Database().updateStatus(for: student, richtig: "\(sR + 1)", falsch: "\(sF)", abwesend: "\(sA)")
-            for s in Database().students {
-                if s.name == student.name {
-                    if !students.isEmpty {
-                        studentsWeiter.append(s)
-                    } else {
-                        
-                    }
-                    break
-                }
-            }
         }
         if falsch {
             Database().updateStatus(for: student, richtig: "\(sR)", falsch: "\(sF + 1)", abwesend: "\(sA)")
@@ -421,4 +333,110 @@ struct Kopfrechnen: View {
 
 #Preview {
     Kopfrechnen()
+}
+
+struct KopfrechnenRunden: View {
+    @ObservedObject var database = Database()
+    @State private var studentsInClass9b: [Student] = []
+    @State private var currentPair: [Student] = []
+    @State private var nextRound: [Student] = []
+    @State private var showWinner = false
+    @State private var winner: Student?
+    @State private var showNewRoundAlert = false
+    @State private var isFirstRound = true
+    
+    var body: some View {
+        VStack {
+            if showWinner, let winner = winner {
+                Text("Der Sieger ist \(winner.name)")
+                    .font(.largeTitle)
+                    .padding()
+            } else if showNewRoundAlert {
+                Text(isFirstRound ? "Spiel starten" : "Neue Runde starten!")
+                    .font(.title2)
+                    .padding()
+                
+                Button(action: {
+                    showNewRoundAlert = false
+                    startNextRound()
+                    isFirstRound = false
+                }) {
+                    Text(isFirstRound ? "Start" : "Runde starten")
+                        .font(.title)
+                        .padding()
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            } else if currentPair.count == 2 || currentPair.count == 3 {
+                Text("Wähle den Schüler, der die Aufgabe richtig beantwortet hat:")
+                    .font(.title2)
+                    .padding()
+                HStack {
+                    ForEach(currentPair, id: \.id) { student in
+                        Button(action: {
+                            advanceStudent(student)
+                        }) {
+                            Text(student.name)
+                                .font(.title)
+                                .padding()
+                                .background(Color.blue.opacity(0.7))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                        .padding()
+                    }
+                }
+            }
+        }
+        .onAppear(perform: initializeGame)
+    }
+    
+    func initializeGame() {
+        // Filtere Schüler der Klasse 9b und speichere sie in einer temporären Liste
+        studentsInClass9b = database.students.filter { $0.klasse == "9b" }
+        studentsInClass9b.shuffle()
+        showNewRoundAlert = true
+    }
+    
+    func advanceStudent(_ student: Student) {
+        // Füge den ausgewählten Schüler zur nächsten Runde hinzu
+        nextRound.append(student)
+        
+        // Überprüfe, ob noch Schüler übrig sind, die gegeneinander antreten müssen
+        if !studentsInClass9b.isEmpty {
+            startNextRound()
+        } else {
+            // Überprüfe, ob wir den Sieger haben oder ob wir eine neue Runde starten müssen
+            if nextRound.count == 1 {
+                winner = nextRound.first
+                showWinner = true
+            } else if nextRound.count == 3 {
+                // Drei Schüler sind übrig, zeige alle drei an
+                currentPair = nextRound
+                nextRound.removeAll()
+            } else {
+                // Setze für die nächste Runde die Schüler zurück
+                studentsInClass9b = nextRound
+                nextRound.removeAll()
+                showNewRoundAlert = true
+            }
+        }
+    }
+    
+    func startNextRound() {
+        // Zeige das nächste Schülerpaar an oder alle drei Schüler, wenn nur noch drei übrig sind
+        if studentsInClass9b.count == 3 {
+            // Füge den letzten übrig gebliebenen Schüler hinzu
+            currentPair = studentsInClass9b
+            studentsInClass9b = []
+        } else if studentsInClass9b.count >= 2 {
+            currentPair = Array(studentsInClass9b.prefix(2))
+            studentsInClass9b = Array(studentsInClass9b.dropFirst(2))
+        } else if studentsInClass9b.count == 0 && nextRound.count == 3 {
+            // Wenn genau drei Schüler übrig sind, zeige alle drei an
+            currentPair = nextRound
+            nextRound.removeAll()
+        }
+    }
 }

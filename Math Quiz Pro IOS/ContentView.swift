@@ -10,6 +10,11 @@ import Foundation
 import StoreKit
 import TipKit
 import SplineRuntime
+import GameKit
+import AVKit
+import AVFoundation
+import AVRouting
+// AVPlayer!!!!!
 
 struct ChangeViewTip: Tip {
     var id: String
@@ -82,6 +87,8 @@ struct ContentView: View {
     @AppStorage("Einführung") var einführung = true
     @State var einführungSheet = false
     @AppStorage("rolle") var rolle = 1
+    @AppStorage("pImGcsammeln") var pImGcsammeln = false
+    @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
     
     var cView: some View {
         GeometryReader { geo in
@@ -178,10 +185,7 @@ struct ContentView: View {
                     ZStack {
                         VStack {
                             Rectangle()
-                                .background(
-                                    .regularMaterial,
-                                    in: RoundedRectangle(cornerRadius: 1, style: .continuous)
-                                )
+                                .background(.thinMaterial)
                             Spacer()
                                 .frame(height: 50)
                         }
@@ -276,7 +280,7 @@ struct ContentView: View {
                             Text("Was ist neu?")
                                 .font(.title)
                                 .padding(20)
-                            WasIstNeu8_0()
+                            WasIstNeuView(title: "", text: "Kopfrechnen \n \nEntdecken Sie jetzt den Kopfrechnen Bereich: \nWählen Sie Kopfrechenaufgaben und anschließend Ihre Klasse aus. Starten Sie dann das Spiel und rufen Sie jeweils die zwei Schüler auf, die auf Ihrem Bildschirm zu sehen sind. Sobald der erste Schüler die richtige Antwort schreit, müssen Sie ihn auf dem iPad oder iPhone anklicken, denn dieser ist eine Runde weiter. Der andere Schüler hat verloren und kann erst beim nächsten Spiel wieder teilnehmen. Dieser Vorgang wiederholt sich so lange weiter, bis zum Finale. Danach steht dann der Sieger dieses Spiels fest.")
                             Button(action: {
                                 showNewView = false
                             }, label: {
@@ -364,7 +368,30 @@ struct ContentView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            AVAudioSession.sharedInstance().prepareRouteSelectionForPlayback(completionHandler: { (shouldStartPlayback, routeSelection) in
+                if shouldStartPlayback {
+                    switch routeSelection {
+                    case .none:
+                        print("none")
+                    case .local:
+                        print("local")
+                    case .external:
+                        print("external")
+                    @unknown default:
+                        print("")
+                    }
+                }
+                
+            })
+        }
         .onChange(of: scenePhase) { newPhase in
+            if rolle != 1 {
+                authenticateUser()
+                updateLeader()
+                leaderboard(punkte: punkte)
+                updateAchievements(id: "juniorMathematiker", points: 1)
+            }
             if newPhase == .active {
                 withAnimation(.easeIn(duration: 1.0)) {
                     let currentDate = Date()
@@ -405,6 +432,99 @@ struct ContentView: View {
             } else if newPhase == .background {
                 print("Background")
             }
+        }
+    }
+    
+    func updateLeader() {
+        let leaderBoard = GKLeaderboard()
+        
+        leaderBoard.identifier = "amMeistenGelosteAufgaben.mqp"
+        leaderBoard.timeScope = .allTime
+        leaderBoard.loadScores { (scores, error) in
+            if let error = error {
+                
+            } else {
+                guard let scores = scores else {
+                    return
+                }
+                // scores form Leaders
+            }
+        }
+        
+        GKLeaderboard.loadLeaderboards { leaderboards, error in
+                guard error == nil else {
+                    print("Error loading leaderboards: \(error!)")
+                    return
+                }
+                
+            print(GKLocalPlayer.local.playerID)
+                let leaderboard = leaderboards?.first { $0.identifier == "amMeistenGelosteAufgaben.mqp" }
+                leaderboard?.loadScores { scores, error in
+                    guard error == nil else {
+                        print("Error loading scores: \(error!)")
+                        return
+                    }
+                    
+                    let localPlayerScore = scores?.first { $0.player.playerID == GKLocalPlayer.local.playerID }
+                    DispatchQueue.main.async {
+                        if  punkte < Int(localPlayerScore?.value ?? 0) {
+                            punkte = Int(localPlayerScore?.value ?? 0)
+                            print(punkte)
+                        }
+                        print(punkte)
+                    }
+                }
+            }
+    }
+    
+    func authenticateUser() {
+        GKLocalPlayer.local.authenticateHandler = { vc, error in
+            guard error == nil else {
+                print(error?.localizedDescription ?? "")
+                return
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            updateLeader()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+          
+        }
+    }
+    
+    func updateAchievements(id: String, points: Int) {
+        GKAchievement.loadAchievements(completionHandler: { (achievements: [GKAchievement]?, error: Error?) in
+            let achievementID = id
+            var achievement: GKAchievement? = nil
+            
+            // Find an existing achievement.
+            achievement = achievements?.first(where: { $0.identifier == achievementID})
+            
+            // Otherwise, create a new achievement.
+            if achievement == nil {
+                print("No achievement")
+                achievement = GKAchievement(identifier: achievementID)
+                print(achievement)
+            }
+            if punkte >= points {
+                achievement?.percentComplete = 100.0
+            } else {
+                achievement?.percentComplete = Double(points/punkte * 10)
+            }// Insert code to report the percentage.
+            
+            if error != nil {
+                // Handle the error that occurs.
+                print("There is an Error!")
+                print("Error: \(String(describing: error))")
+            }
+        })
+    }
+    
+    func leaderboard(punkte: Int) {
+        Task{
+            try await GKLeaderboard.submitScore(punkte, context: 0,
+                                                player: GKLocalPlayer.local,
+                                                leaderboardIDs: ["amMeistenGelosteAufgaben.mqp"])
         }
     }
 }
@@ -1308,6 +1428,33 @@ struct WasIstNeu8_0: View {
                         }
                         HStack {
                             Text("Bist du ein Schüler? \nDann behalte deinen Rang viel besser im Blick mit dem neuen \"Status Widget\" für den Home Bildschirm")
+                                .font(.caption)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                    Spacer()
+                        .frame(width: 10)
+                }
+            }
+            Section("") {
+                HStack {
+                    Image(systemName: "gamecontroller")
+                        .resizable()
+                        .scaledToFit()
+                        .foregroundColor(.blue)
+                        .frame(width: 50, height: 50)
+                    Spacer()
+                        .frame(width: 10)
+                    VStack {
+                        HStack {
+                            Text("GameCenter")
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("Bist du ein Schüler? \nDann öffne die Einstellungen und schalte ein, dass du Punkte im GameCenter sammeln willst. \nFordere Freunde heraus und löst möglichst viele Aufgaben.")
                                 .font(.caption)
                                 .multilineTextAlignment(.leading)
                             Spacer()

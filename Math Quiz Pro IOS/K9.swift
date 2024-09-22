@@ -69,6 +69,7 @@ struct K9: View {
     @State var satzDesPythagoras = false
     @ObservedObject var database = Database()
     
+    @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
     @AppStorage("Klasse 9") var klasse9 = false
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
@@ -82,7 +83,6 @@ struct K9: View {
     @State var showError1Alert = false
     @State var exponentVorzeichen = "Positiv/Negativ"
     @State private var selectedClass = ""
-    @State private var klassenListe: [String] = UserDefaults.standard.stringArray(forKey: "Klassen") ?? []
     @State var schüler = ""
     @State var student = Student(name: "Test", richtig: "0", falsch: "0", abwesend: "", klasse: "k", datum: "")
     @AppStorage("rolle") var rolle = 1
@@ -196,35 +196,7 @@ struct K9: View {
                     }
                     Spacer()
                 } else if step == 2 {
-                    Text("Bitte wählen Sie eine Klasse aus, aus der zufällige Schüler in der Besprechungsrunde erscheinen werden")
-                        .multilineTextAlignment(.center)
-                        .padding(20)
-                    HStack {
-                        Spacer()
-                            .frame(width: 20)
-                        List(klassenListe, id: \.self) { klasse in
-                            HStack {
-                                Text(klasse)
-                                Spacer()
-                                Button(action: {
-                                    selectedClass = klasse
-                                }, label: {
-                                    if selectedClass != klasse {
-                                        Image(systemName: "circle")
-                                            .foregroundColor(.gray)
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.green)
-                                            .frame(width: 20, height: 20)
-                                    }
-                                })
-                            }
-                        }
-                        .cornerRadius(15)
-                        Spacer()
-                            .frame(width: 20)
-                    }
+                    SelectClass(selectedClass: $selectedClass)
                 } else if step == 3 {
                     InfoAufgaben()
                 } else if step == 4 {

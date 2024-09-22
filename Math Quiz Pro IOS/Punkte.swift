@@ -23,6 +23,7 @@ struct bcPunkte: View {
 struct Punkte: View {
     @AppStorage("PunkteSammeln") var punkteSammeln = true
     @AppStorage("punkte", store: UserDefaults(suiteName: "group.PunkteMatheQuizPro")) var punkte = 1
+    @AppStorage("pImGcsammeln") var pImGcsammeln = false
     
     var body: some View {
         GeometryReader { geo in
@@ -30,6 +31,32 @@ struct Punkte: View {
                 RotateDevice(verticalDrehen: true)
             } else {
                 VStack {
+                    if pImGcsammeln {
+                        NavigationLink(destination: {
+                            ShowRankings()
+                        }, label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 15)
+                                    .frame(height: 50)
+                                    .shadow(radius: 5)
+                                    .foregroundColor(.white)
+                                HStack {
+                                    Spacer()
+                                        .frame(width: 10)
+                                    Text("Spieler im Game Center")
+                                    Spacer()
+                                    Image(systemName: "arrow.right")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 40, height: 40)
+                                    Spacer()
+                                        .frame(width: 10)
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 20)
+                        })
+                    }
                     ZStack {
                         bcPunkte()
                         VStack {
